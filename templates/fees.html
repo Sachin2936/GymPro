@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💳 Fee Management - GymPro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 3px solid #ff6b35;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #ff6b35;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .stat-card.danger {
+            border-color: rgba(255, 67, 67, 0.5);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 25px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 107, 53, 0.4);
+            transform: translateX(-5px);
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .filter-btn.active {
+            background: #ff6b35;
+            color: #fff;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 107, 53, 0.5);
+        }
+
+        .fees-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .fee-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .fee-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ff6b35;
+        }
+
+        .fee-card.overdue {
+            border-left: 5px solid #ff4343;
+        }
+
+        .fee-card.reminder {
+            border-left: 5px solid #ffc107;
+        }
+
+        .fee-card.paid {
+            border-left: 5px solid #4caf50;
+        }
+
+        .fee-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .fee-member {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .member-details h3 {
+            color: #ff6b35;
+            margin-bottom: 5px;
+        }
+
+        .member-details a {
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+
+        .member-details a:hover {
+            color: #ff6b35;
+        }
+
+        .fee-details {
+            text-align: right;
+        }
+
+        .fee-amount {
+            font-size: 1.8em;
+            color: #ff6b35;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .fee-date {
+            color: #a0a0a0;
+            font-size: 0.9em;
+        }
+
+        .fee-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 150px;
+        }
+
+        .status-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+
+        .badge-paid {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+
+        .badge-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+
+        .badge-overdue {
+            background: rgba(255, 67, 67, 0.2);
+            color: #ff4343;
+            border: 1px solid #ff4343;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 8px 12px;
+            background: rgba(255, 107, 53, 0.2);
+            color: #ff6b35;
+            border: 1px solid #ff6b35;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 107, 53, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0a0a0;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .summary-box {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            color: #a0a0a0;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        @media (max-width: 768px) {
+            .fee-info {
+                grid-template-columns: 1fr;
+            }
+
+            .fee-card {
+                grid-template-columns: 1fr;
+            }
+
+            .fee-details {
+                text-align: left;
+            }
+
+            .fee-actions {
+                flex-direction: row;
+                min-width: auto;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💳 Fee Management Dashboard</h1>
+            <p class="subtitle">Track and manage all membership payments</p>
+        </header>
+
+        <a href="/" class="back-link">⬅ Back to Home</a>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-label">Total Pending</div>
+                <div class="stat-value">{{ pending_fees | length }}</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="stat-icon">🚨</div>
+                <div class="stat-label">Overdue</div>
+                <div class="stat-value">{{ overdue_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-label">Total Due</div>
+                <div class="stat-value">₹{{ pending_fees | map(attribute=3) | sum | int }}</div>
+            </div>
+        </div>
+
+        <!-- Fees List -->
+        {% if pending_fees %}
+            <div class="fees-list">
+                {% for fee in pending_fees %}
+                    {% set days_until = (fee[4] | string) %}
+                    {% set is_overdue = fee[4] < now().strftime("%Y-%m-%d") %}
+                    <div class="fee-card {% if is_overdue %}overdue{% else %}reminder{% endif %}">
+                        <div class="fee-info">
+                            <div class="fee-member">
+                                <div class="member-avatar">{{ fee[2][0] | upper }}</div>
+                                <div class="member-details">
+                                    <h3>{{ fee[2] }}</h3>
+                                    <a href="/member/{{ fee[1] }}">View Profile →</a>
+                                </div>
+                            </div>
+                            <div class="fee-details">
+                                <div class="fee-amount">₹{{ fee[3] | int }}</div>
+                                <div class="fee-date">Due: {{ fee[4] }}</div>
+                            </div>
+                        </div>
+                        <div class="fee-actions">
+                            {% if is_overdue %}
+                                <div class="status-badge badge-overdue">⚠️ OVERDUE</div>
+                            {% else %}
+                                <div class="status-badge badge-pending">⏳ PENDING</div>
+                            {% endif %}
+                            <div class="action-buttons">
+                                <a href="/member/{{ fee[1] }}" class="btn-primary">Pay Now</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">✓</div>
+                <p>All payments are up to date! 🎉</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Add current date for comparison
+        function now() {
+            const date = new Date();
+            return {
+                strftime: function(format) {
+                    if (format === "%Y-%m-%d") {
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${year}-${month}-${day}`;
+                    }
+                }
+            };
+        }
+    </script>
+</body>
+</html>

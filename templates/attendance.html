@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Attendance History - GymPro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 3px solid #ff6b35;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #ff6b35;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 25px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 107, 53, 0.4);
+            transform: translateX(-5px);
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(255, 107, 53, 0.2);
+            padding: 20px;
+            text-align: left;
+            font-weight: bold;
+            color: #ff6b35;
+            border-bottom: 2px solid rgba(255, 107, 53, 0.3);
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .status-present {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            font-size: 0.85em;
+        }
+
+        .status-absent {
+            background: rgba(255, 67, 67, 0.2);
+            color: #ff4343;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            font-size: 0.85em;
+        }
+
+        .status-leave {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            font-size: 0.85em;
+        }
+
+        .name-link {
+            color: #ff6b35;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .name-link:hover {
+            text-decoration: underline;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0a0a0;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            th, td {
+                padding: 12px;
+                font-size: 0.9em;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Attendance History</h1>
+            <p class="subtitle">Complete attendance records of all members</p>
+        </header>
+
+        <a href="/" class="back-link">⬅ Back to Home</a>
+
+        {% if records %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td><a href="/member/{{ record[0] }}" class="name-link">{{ record[1] }}</a></td>
+                        <td>{{ record[2] }}</td>
+                        <td>
+                            {% if record[3] == 'Present' %}
+                                <span class="status-present">✓ Present</span>
+                            {% elif record[3] == 'Absent' %}
+                                <span class="status-absent">✗ Absent</span>
+                            {% elif record[3] == 'Leave' %}
+                                <span class="status-leave">~ Leave</span>
+                            {% endif %}
+                        </td>
+                        <td><a href="/member/{{ record[0] }}" style="color: #ff6b35;">View Profile</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📊</div>
+            <p>No attendance records yet. Start marking attendance!</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

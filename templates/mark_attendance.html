@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✓ Mark Attendance - GymPro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .member-name {
+            font-size: 2em;
+            color: #ff6b35;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            margin: 0 auto 25px;
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        h1 {
+            color: #a0a0a0;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            font-weight: normal;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #a0a0a0;
+            font-weight: 500;
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .option-button {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .status-btn {
+            padding: 15px;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #a0a0a0;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .status-btn:hover {
+            border-color: #ff6b35;
+            color: #ff6b35;
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .status-btn.active {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
+            border-color: #ff6b35;
+            color: #fff;
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .cancel-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 107, 53, 0.2);
+            color: #ff6b35;
+            border: 1px solid #ff6b35;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background: rgba(255, 107, 53, 0.4);
+        }
+
+        .date-display {
+            color: #a0a0a0;
+            font-size: 0.95em;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 25px;
+            }
+
+            .member-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
+            }
+
+            .member-name {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="member-avatar">{{ member_name[0] | upper }}</div>
+            <h1>Mark Attendance</h1>
+            <div class="member-name">{{ member_name }}</div>
+            
+            <div class="date-display">
+                📅 <strong id="current-date"></strong>
+            </div>
+
+            <form method="POST" id="attendanceForm">
+                <div class="form-group">
+                    <label>Attendance Status</label>
+                    <div class="option-button">
+                        <button type="button" class="status-btn active" data-status="Present">
+                            ✓ Present
+                        </button>
+                        <button type="button" class="status-btn" data-status="Absent">
+                            ✗ Absent
+                        </button>
+                        <button type="button" class="status-btn" data-status="Leave">
+                            ~ Leave
+                        </button>
+                        <button type="button" class="status-btn" data-status="Late">
+                            🕐 Late
+                        </button>
+                    </div>
+                    <input type="hidden" name="status" id="statusInput" value="Present">
+                </div>
+
+                <button type="submit" class="submit-btn">✓ Mark Attendance</button>
+                <a href="/" class="cancel-btn">⬅ Cancel</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const today = new Date().toLocaleDateString('en-US', options);
+        document.getElementById('current-date').textContent = today;
+
+        // Handle status button clicks
+        document.querySelectorAll('.status-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('statusInput').value = btn.getAttribute('data-status');
+            });
+        });
+    </script>
+</body>
+</html>

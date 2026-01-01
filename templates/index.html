@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💪 GymPro - Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 3px solid #ff6b35;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #ff6b35;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1em;
+        }
+
+        .alerts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .alert-box {
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border-left: 5px solid;
+        }
+
+        .alert-warning {
+            background: rgba(255, 107, 53, 0.15);
+            border-left-color: #ff6b35;
+        }
+
+        .alert-danger {
+            background: rgba(255, 67, 67, 0.15);
+            border-left-color: #ff4343;
+        }
+
+        .alert-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert-amount {
+            background: #ff6b35;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #ff6b35;
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #a0a0a0;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .members-section {
+            margin-top: 40px;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .member-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .member-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #ff6b35;
+            transform: translateY(-5px);
+        }
+
+        .member-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .member-info h3 {
+            color: #ff6b35;
+            margin-bottom: 5px;
+        }
+
+        .member-info p {
+            color: #a0a0a0;
+            font-size: 0.85em;
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 107, 53, 0.3);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .btn-small:hover {
+            background: rgba(255, 107, 53, 0.5);
+        }
+
+        .nav-links {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 107, 53, 0.2);
+        }
+
+        .nav-links a {
+            display: inline-block;
+            margin: 0 15px;
+            padding: 12px 25px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 107, 53, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #a0a0a0;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .alerts-section {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💪 GymPro</h1>
+            <p class="subtitle">Member Management & Attendance System</p>
+        </header>
+
+        <!-- Alerts Section -->
+        <div class="alerts-section">
+            <!-- Fee Reminders -->
+            <div class="alert-box alert-warning">
+                <div class="alert-title">⏰ Payment Reminders (2-3 Days)</div>
+                {% if reminders %}
+                    {% for reminder in reminders %}
+                    <div class="alert-item">
+                        <span>{{ reminder[1] }}</span>
+                        <span class="alert-amount">₹{{ reminder[3] | int }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #a0a0a0; text-align: center; padding: 20px;">No reminders today</p>
+                {% endif %}
+            </div>
+
+            <!-- Overdue Payments -->
+            <div class="alert-box alert-danger">
+                <div class="alert-title">🚨 Overdue Payments</div>
+                {% if overdue %}
+                    {% for payment in overdue %}
+                    <div class="alert-item">
+                        <span>{{ payment[1] }}</span>
+                        <span class="alert-amount">₹{{ payment[3] | int }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #a0a0a0; text-align: center; padding: 20px;">All payments up to date ✓</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="content-grid">
+            <!-- Add New Member -->
+            <div class="card">
+                <h2>➕ Add New Member</h2>
+                <form method="POST" action="/add-member">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label>Starting Weight (kg)</label>
+                        <input type="number" name="weight" step="0.1">
+                    </div>
+                    <button type="submit">Add Member</button>
+                </form>
+            </div>
+
+            <!-- Fees Management -->
+            <div class="card">
+                <h2>💳 Fee Management</h2>
+                <div style="text-align: center; padding: 40px 0;">
+                    <p style="font-size: 1.1em; margin-bottom: 20px;">Manage all membership fees</p>
+                    <a href="/fees" style="display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%); border-radius: 8px; text-decoration: none; color: white; font-weight: bold;">
+                        View All Payments
+                    </a>
+                </div>
+            </div>
+
+            <!-- Attendance Records -->
+            <div class="card">
+                <h2>📊 Attendance Records</h2>
+                <div style="text-align: center; padding: 40px 0;">
+                    <p style="font-size: 1.1em; margin-bottom: 20px;">View attendance history</p>
+                    <a href="/attendance-history" style="display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%); border-radius: 8px; text-decoration: none; color: white; font-weight: bold;">
+                        View History
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Members Section -->
+        <div class="members-section">
+            <h2 style="color: #ff6b35; margin-bottom: 25px; font-size: 1.5em;">👥 Active Members</h2>
+            
+            {% if members %}
+            <div class="members-grid">
+                {% for member in members %}
+                <div class="member-card">
+                    <div class="member-header">
+                        <div class="member-avatar">{{ member[1][0] | upper }}</div>
+                        <div class="member-info">
+                            <h3>{{ member[1] }}</h3>
+                            <p>📅 Joined: {{ member[4] }}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="color: #a0a0a0; font-size: 0.85em;">Weight: <strong>{{ member[5] }} kg</strong></p>
+                        {% if member[6] %}
+                        <p style="color: #a0a0a0; font-size: 0.85em;">Phone: <strong>{{ member[6] }}</strong></p>
+                        {% endif %}
+                    </div>
+
+                    <div class="member-actions">
+                        <a href="/member/{{ member[0] }}" class="btn-small">Profile</a>
+                        <a href="/attendance/{{ member[0] }}" class="btn-small">✓ Attend</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">👥</div>
+                <p>No members yet. Add your first member above!</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="/attendance-history">📊 Attendance History</a>
+            <a href="/fees">💳 Fee Management</a>
+        </div>
+    </div>
+</body>
+</html>
