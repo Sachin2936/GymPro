@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📊 Attendance History - GymPro</title>
+    <title>📊 Attendance History - FitZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,34 +12,49 @@
             box-sizing: border-box;
         }
 
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) rotateX(20deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px) rotateY(10deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) rotateY(0deg);
+            }
+        }
+
+        @keyframes pulse3D {
+            0%, 100% {
+                transform: scale(1) rotateX(0deg);
+            }
+            50% {
+                transform: scale(1.05) rotateX(5deg);
+            }
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a3e 100%);
             color: #fff;
             min-height: 100vh;
             padding: 20px;
+            perspective: 1200px;
         }
 
         .container {
             max-width: 1000px;
             margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0;
-            border-bottom: 3px solid #ff6b35;
-        }
-
-        h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-            color: #ff6b35;
-        }
-
-        .subtitle {
-            color: #a0a0a0;
         }
 
         .back-link {
@@ -55,8 +71,29 @@
         }
 
         .back-link:hover {
-            background: rgba(255, 107, 53, 0.4);
+            background: #ff6b35;
+            color: #fff;
             transform: translateX(-5px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 3px solid #ff6b35;
+            animation: slideInFromTop 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #ff6b35;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1em;
         }
 
         .table-container {
@@ -66,6 +103,8 @@
             overflow: hidden;
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: slideInFromLeft 0.8s ease-out;
+            transform-style: preserve-3d;
         }
 
         table {
@@ -89,6 +128,8 @@
 
         tr:hover {
             background: rgba(255, 107, 53, 0.1);
+            transform: translateX(5px) rotateY(2deg);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .status-present {
@@ -99,6 +140,7 @@
             font-weight: bold;
             display: inline-block;
             font-size: 0.85em;
+            animation: pulse3D 1s ease-in-out infinite;
         }
 
         .status-absent {
@@ -109,6 +151,7 @@
             font-weight: bold;
             display: inline-block;
             font-size: 0.85em;
+            animation: pulse3D 1s ease-in-out infinite;
         }
 
         .status-leave {
@@ -119,52 +162,47 @@
             font-weight: bold;
             display: inline-block;
             font-size: 0.85em;
+            animation: pulse3D 1s ease-in-out infinite;
         }
 
-        .name-link {
-            color: #ff6b35;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .name-link:hover {
-            text-decoration: underline;
-        }
-
-        .empty-state {
+        .no-records {
             text-align: center;
-            padding: 60px 20px;
+            padding: 40px;
             color: #a0a0a0;
+            font-size: 1.1em;
         }
 
-        .empty-state-icon {
-            font-size: 3em;
-            margin-bottom: 20px;
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px 0;
+            color: #a0a0a0;
+            border-top: 2px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .motivation {
+            font-size: 1em;
+            color: #ff6b35;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-style: italic;
         }
 
         @media (max-width: 768px) {
-            th, td {
-                padding: 12px;
-                font-size: 0.9em;
-            }
-
-            h1 {
-                font-size: 1.5em;
-            }
+            h1 { font-size: 1.8em; }
+            th, td { padding: 12px; font-size: 0.9em; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+
         <header>
             <h1>📊 Attendance History</h1>
-            <p class="subtitle">Complete attendance records of all members</p>
+            <p class="subtitle">Complete attendance records for all members</p>
         </header>
 
-        <a href="/" class="back-link">⬅ Back to Home</a>
-
-        {% if records %}
         <div class="table-container">
             <table>
                 <thead>
@@ -172,35 +210,23 @@
                         <th>Member Name</th>
                         <th>Date</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for record in records %}
                     <tr>
-                        <td><a href="/member/{{ record[0] }}" class="name-link">{{ record[1] }}</a></td>
-                        <td>{{ record[2] }}</td>
-                        <td>
-                            {% if record[3] == 'Present' %}
-                                <span class="status-present">✓ Present</span>
-                            {% elif record[3] == 'Absent' %}
-                                <span class="status-absent">✗ Absent</span>
-                            {% elif record[3] == 'Leave' %}
-                                <span class="status-leave">~ Leave</span>
-                            {% endif %}
+                        <td colspan="4" class="no-records">
+                            📅 No attendance records found. Members need to mark their attendance first!
                         </td>
-                        <td><a href="/member/{{ record[0] }}" style="color: #ff6b35;">View Profile</a></td>
                     </tr>
-                    {% endfor %}
                 </tbody>
             </table>
         </div>
-        {% else %}
-        <div class="empty-state">
-            <div class="empty-state-icon">📊</div>
-            <p>No attendance records yet. Start marking attendance!</p>
-        </div>
-        {% endif %}
+
+        <footer>
+            <p class="motivation">💪 "Every day you show up is a victory!" 💪</p>
+            <p>&copy; 2025 FitZone Gym Management. Consistency builds champions!</p>
+        </footer>
     </div>
 </body>
 </html>

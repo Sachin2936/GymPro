@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Profile - GymPro</title>
+    <title>📊 Member Profile - FitZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,12 +12,33 @@
             box-sizing: border-box;
         }
 
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px) rotateY(20deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) rotateY(0deg);
+            }
+        }
+
+        @keyframes float3D {
+            0%, 100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+            }
+            50% {
+                transform: translateY(-15px) rotateX(-5deg) rotateY(5deg);
+            }
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a3e 100%);
             color: #fff;
             min-height: 100vh;
             padding: 20px;
+            perspective: 1200px;
         }
 
         .container {
@@ -24,22 +46,9 @@
             margin: 0 auto;
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #ff6b35;
-        }
-
-        .header-content h1 {
-            color: #ff6b35;
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-
         .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
             padding: 12px 25px;
             background: rgba(255, 107, 53, 0.2);
             border: 1px solid #ff6b35;
@@ -51,95 +60,145 @@
         }
 
         .back-link:hover {
-            background: rgba(255, 107, 53, 0.4);
+            background: #ff6b35;
+            color: #fff;
             transform: translateX(-5px);
         }
 
-        .profile-header {
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #ff6b35;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ff6b35;
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            margin: 20px auto;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            animation: float3D 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        .profile-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 40px;
         }
 
-        .member-card {
+        .card {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 107, 53, 0.3);
             border-radius: 15px;
-            padding: 30px;
+            padding: 25px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: slideInFromLeft 0.8s ease-out;
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .member-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        .card:hover {
+            transform: rotateX(5deg) rotateY(-5deg) translateZ(10px);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.3);
         }
 
-        .member-info h2 {
+        .card h3 {
             color: #ff6b35;
             margin-bottom: 20px;
-            font-size: 1.5em;
+            font-size: 1.3em;
         }
 
-        .info-item {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
             border-bottom: 1px solid rgba(255, 107, 53, 0.1);
         }
 
         .info-label {
             color: #a0a0a0;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: bold;
         }
 
         .info-value {
             color: #fff;
-            font-size: 1.1em;
-            font-weight: 500;
-            margin-top: 5px;
+            font-weight: bold;
         }
 
-        .quick-actions {
+        .action-btns {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
+            margin-bottom: 40px;
         }
 
-        .action-btn {
+        .btn-primary {
             padding: 15px;
             background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
-            color: #fff;
             border: none;
             border-radius: 8px;
-            cursor: pointer;
+            color: #fff;
             font-weight: bold;
-            transition: all 0.3s ease;
-            text-align: center;
-            text-decoration: none;
-            display: block;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            perspective: 1000px;
         }
 
-        .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        .btn-primary:hover {
+            transform: translateY(-5px) rotateX(-3deg) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
         }
 
-        .content-grid {
+        .stats-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            animation: slideInFromLeft 0.8s ease-out forwards;
+        }
+
+        .stat-box:nth-child(1) { animation-delay: 0s; }
+        .stat-box:nth-child(2) { animation-delay: 0.1s; }
+        .stat-box:nth-child(3) { animation-delay: 0.2s; }
+
+        .stat-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 0.85em;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            color: #ff6b35;
+            font-weight: bold;
         }
 
         .section {
@@ -147,395 +206,199 @@
             border: 1px solid rgba(255, 107, 53, 0.3);
             border-radius: 15px;
             padding: 25px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            animation: slideInFromLeft 0.8s ease-out;
         }
 
-        .section h3 {
+        .section h4 {
             color: #ff6b35;
             margin-bottom: 20px;
             font-size: 1.2em;
+        }
+
+        .recent-list {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 10px;
         }
 
-        .stat-row {
+        .list-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
-        }
-
-        .stat-row:last-child {
-            border-bottom: none;
-        }
-
-        .stat-label {
-            color: #a0a0a0;
-        }
-
-        .stat-value {
-            color: #ff6b35;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .weight-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             padding: 12px;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
-            margin-bottom: 10px;
         }
 
-        .weight-month {
-            color: #a0a0a0;
-        }
-
-        .weight-value {
-            color: #ff6b35;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 30px;
-            color: #a0a0a0;
-        }
-
-        .fee-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid #ff6b35;
-        }
-
-        .fee-info {
-            flex: 1;
-        }
-
-        .fee-amount {
-            color: #ff6b35;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .fee-date {
+        .list-date {
             color: #a0a0a0;
             font-size: 0.9em;
         }
 
-        .fee-status {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-
-        .status-paid {
-            background: rgba(76, 175, 80, 0.2);
-            color: #4caf50;
-        }
-
-        .status-pending {
-            background: rgba(255, 193, 7, 0.2);
-            color: #ffc107;
-        }
-
-        .attendance-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .attendance-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
-        }
-
-        .attendance-item:last-child {
-            border-bottom: none;
-        }
-
-        .attendance-date {
-            color: #a0a0a0;
-        }
-
-        .status-badge {
-            padding: 4px 10px;
+        .list-status {
+            padding: 4px 12px;
             border-radius: 15px;
-            font-size: 0.8em;
             font-weight: bold;
+            font-size: 0.85em;
         }
 
-        .badge-present {
+        .status-present {
             background: rgba(76, 175, 80, 0.2);
             color: #4caf50;
         }
 
-        .badge-absent {
+        .status-absent {
             background: rgba(255, 67, 67, 0.2);
             color: #ff4343;
         }
 
-        .badge-leave {
+        .status-leave {
             background: rgba(255, 193, 7, 0.2);
             color: #ffc107;
         }
 
-        .badge-late {
-            background: rgba(255, 152, 0, 0.2);
-            color: #ff9800;
-        }
-
-        .add-weight-form, .add-fee-form {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .form-group.full {
-            grid-template-columns: 1fr;
-        }
-
-        label {
-            display: block;
-            font-size: 0.85em;
+        footer {
+            text-align: center;
+            padding: 30px 0;
             color: #a0a0a0;
-            margin-bottom: 3px;
-        }
-
-        input {
-            padding: 8px;
-            border: 1px solid rgba(255, 107, 53, 0.3);
-            border-radius: 5px;
-            background: rgba(0, 0, 0, 0.3);
-            color: #fff;
-            font-size: 0.9em;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #ff6b35;
-        }
-
-        .form-button {
-            padding: 10px 20px;
-            background: #ff6b35;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9em;
-            transition: all 0.3s ease;
-        }
-
-        .form-button:hover {
-            background: #ff8560;
+            border-top: 2px solid rgba(255, 107, 53, 0.3);
+            margin-top: 50px;
         }
 
         @media (max-width: 768px) {
-            .profile-header, .content-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-
-            header {
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .form-group {
-                grid-template-columns: 1fr;
-            }
+            .profile-grid { grid-template-columns: 1fr; }
+            .action-btns { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8em; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+
         <header>
-            <div class="header-content">
-                <h1>👤 Member Profile</h1>
-            </div>
-            <a href="/" class="back-link">⬅ Back to Home</a>
+            {% if member %}
+            <h1>💪 {{ member[1] }}'s Profile</h1>
+            <div class="member-avatar">{{ member[1][0].upper() }}</div>
+            {% endif %}
         </header>
 
-        <!-- Profile Header -->
-        <div class="profile-header">
-            <div class="member-card">
-                <div class="member-avatar">{{ member[1][0] | upper }}</div>
-                <div class="member-info">
-                    <h2>{{ member[1] }}</h2>
-                    <div class="info-item">
-                        <div class="info-label">📅 Joined</div>
-                        <div class="info-value">{{ member[4] }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">⚖️ Starting Weight</div>
-                        <div class="info-value">{{ member[5] }} kg</div>
-                    </div>
-                    {% if member[3] %}
-                    <div class="info-item">
-                        <div class="info-label">📱 Phone</div>
-                        <div class="info-value">{{ member[3] }}</div>
-                    </div>
-                    {% endif %}
-                    {% if member[2] %}
-                    <div class="info-item">
-                        <div class="info-label">📧 Email</div>
-                        <div class="info-value">{{ member[2] }}</div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="member-card">
-                <h3 style="color: #ff6b35; margin-bottom: 20px;">Quick Actions</h3>
-                <div class="quick-actions">
-                    <a href="/attendance/{{ member[0] }}" class="action-btn">✓ Mark Attendance</a>
-                    <a href="#weight" class="action-btn">⚖️ Add Weight</a>
-                    <a href="#fees" class="action-btn">💳 Add Fee</a>
-                    <a href="/attendance-history" class="action-btn">📊 History</a>
-                </div>
-            </div>
+        {% if member %}
+        <!-- QUICK ACTIONS -->
+        <div class="action-btns">
+            <button class="btn-primary" onclick="alert('Add weight for next month')">📈 Log Weight</button>
+            <a href="/attendance/{{ member[0] }}" class="btn-primary" style="text-decoration: none; text-align: center;">✅ Mark Attendance</a>
         </div>
 
-        <!-- Content Grid -->
-        <div class="content-grid">
-            <!-- Attendance Stats -->
-            <div class="section">
-                <h3>📊 Attendance Stats (This Month)</h3>
+        <!-- MEMBER INFO & STATS -->
+        <div class="profile-grid">
+            <div class="card">
+                <h3>📋 Personal Information</h3>
+                <div class="info-row">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">{{ member[1] }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone:</span>
+                    <span class="info-value">{{ member[2] or '—' }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{ member[3] or '—' }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Joined:</span>
+                    <span class="info-value">{{ member[4] }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value">{{ member[6] }}</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Attendance Stats</h3>
                 {% if attendance_data %}
                     {% for status, count in attendance_data %}
-                    <div class="stat-row">
-                        <span class="stat-label">
-                            {% if status == 'Present' %}✓ Present{% elif status == 'Absent' %}✗ Absent{% elif status == 'Leave' %}~ Leave{% elif status == 'Late' %}🕐 Late{% endif %}
-                        </span>
-                        <span class="stat-value">{{ count }}</span>
+                    <div class="info-row">
+                        <span class="info-label">{{ status }}:</span>
+                        <span class="info-value">{{ count }} days</span>
                     </div>
                     {% endfor %}
                 {% else %}
-                <div class="empty-state">No attendance records yet</div>
-                {% endif %}
-            </div>
-
-            <!-- Weight Tracking -->
-            <div class="section" id="weight">
-                <h3>⚖️ Weight Progress</h3>
-                {% if weight_logs %}
-                    <div style="margin-bottom: 15px;">
-                        {% for month, weight in weight_logs %}
-                        <div class="weight-item">
-                            <span class="weight-month">{{ month }}</span>
-                            <span class="weight-value">{{ weight }} kg</span>
-                        </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state" style="padding: 20px;">No weight records yet</div>
-                {% endif %}
-
-                <form method="POST" action="/add-weight" class="add-weight-form">
-                    <input type="hidden" name="member_id" value="{{ member[0] }}">
-                    <div class="form-group">
-                        <div>
-                            <label>Month (YYYY-MM)</label>
-                            <input type="month" name="month" required>
-                        </div>
-                        <div>
-                            <label>Weight (kg)</label>
-                            <input type="number" name="weight" step="0.1" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="form-button" style="width: 100%;">Add Weight</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Fees and Attendance -->
-        <div class="content-grid">
-            <!-- Fee Management -->
-            <div class="section" id="fees">
-                <h3>💳 Fee Payment History</h3>
-                {% if fees %}
-                    {% for fee in fees %}
-                    <div class="fee-item">
-                        <div class="fee-info">
-                            <div class="fee-amount">₹{{ fee[2] | int }}</div>
-                            <div class="fee-date">Due: {{ fee[4] }}</div>
-                        </div>
-                        {% if fee[5] == 'paid' %}
-                            <span class="fee-status status-paid">✓ Paid</span>
-                        {% else %}
-                            <span class="fee-status status-pending">⏳ Pending</span>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="empty-state" style="padding: 20px;">No fee records yet</div>
-                {% endif %}
-
-                <form method="POST" action="/add-fees" class="add-fee-form">
-                    <input type="hidden" name="member_id" value="{{ member[0] }}">
-                    <div class="form-group full">
-                        <label>Fee Amount (₹)</label>
-                        <input type="number" name="amount" step="1" placeholder="Enter amount" required>
-                    </div>
-                    <button type="submit" class="form-button" style="width: 100%;">Record Payment</button>
-                </form>
-            </div>
-
-            <!-- Recent Attendance -->
-            <div class="section">
-                <h3>📋 Recent Attendance (Last 10)</h3>
-                {% if recent_attendance %}
-                    <div class="attendance-list">
-                        {% for date, status in recent_attendance %}
-                        <div class="attendance-item">
-                            <span class="attendance-date">{{ date }}</span>
-                            <span class="status-badge 
-                                {% if status == 'Present' %}badge-present
-                                {% elif status == 'Absent' %}badge-absent
-                                {% elif status == 'Leave' %}badge-leave
-                                {% elif status == 'Late' %}badge-late
-                                {% endif %}">
-                                {% if status == 'Present' %}✓ Present
-                                {% elif status == 'Absent' %}✗ Absent
-                                {% elif status == 'Leave' %}~ Leave
-                                {% elif status == 'Late' %}🕐 Late
-                                {% endif %}
-                            </span>
-                        </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state" style="padding: 30px;">No attendance records</div>
+                <p style="color: #a0a0a0;">No attendance records yet</p>
                 {% endif %}
             </div>
         </div>
+
+        <!-- WEIGHT PROGRESSION -->
+        {% if weight_logs %}
+        <div class="section">
+            <h4>📈 Weight Progression</h4>
+            <div class="recent-list">
+                {% for log in weight_logs %}
+                <div class="list-item">
+                    <span>{{ log[0] }}</span>
+                    <span style="color: #ff6b35; font-weight: bold;">{{ log[1] }} kg</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- RECENT ATTENDANCE -->
+        {% if recent_attendance %}
+        <div class="section">
+            <h4>📅 Recent Attendance</h4>
+            <div class="recent-list">
+                {% for att in recent_attendance %}
+                <div class="list-item">
+                    <span>{{ att[0] }}</span>
+                    <span class="list-status status-{{ att[1]|lower }}">{{ att[1] }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- FEE INFORMATION -->
+        {% if fees %}
+        <div class="section">
+            <h4>💳 Payment History</h4>
+            <div class="recent-list">
+                {% set latest_fee = fees[0] %}
+                {% set due_date = latest_fee[4] %}
+                {% set paid_status = latest_fee[5] %}
+                {% set today = cycler.__self__.now().strftime('%Y-%m-%d') %}
+                {% set days_left = (cycler.__self__.strptime(due_date, '%Y-%m-%d') - cycler.__self__.strptime(today, '%Y-%m-%d')).days %}
+                <div class="list-item" style="background:rgba(255,255,255,0.04);border:2px solid #ff6b35;">
+                    <span>Next Due: <b>{{ due_date }}</b> ({{ days_left }} days left)</span>
+                    {% if paid_status == 'pending' %}
+                        <form action="/pay-fees/{{ member[0] }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-primary" style="padding:8px 18px;font-size:1em;">Mark Fee Paid</button>
+                        </form>
+                    {% else %}
+                        <span style="color:#4caf50;font-weight:bold;">Paid</span>
+                    {% endif %}
+                </div>
+                {% for fee in fees %}
+                <div class="list-item">
+                    <span>Due: {{ fee[4] }}</span>
+                    <span style="color: #ff6b35; font-weight: bold;">₹{{ fee[2]|int }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <footer>
+            <p>💪 "Consistency is the key to transformation!" 💪</p>
+            <p>&copy; 2025 FitZone - Stay Strong, Stay Fit</p>
+        </footer>
+
+        {% else %}
+        <p style="text-align: center; color: #a0a0a0;">Member not found</p>
+        {% endif %}
     </div>
 </body>
 </html>

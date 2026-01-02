@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✓ Mark Attendance - GymPro</title>
+    <title>✅ Mark Attendance - FitZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,188 +12,197 @@
             box-sizing: border-box;
         }
 
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) rotateX(20deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        @keyframes float3D {
+            0%, 100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+            }
+            50% {
+                transform: translateY(-15px) rotateX(-5deg) rotateY(5deg);
+            }
+        }
+
+        @keyframes pulse3D {
+            0%, 100% {
+                transform: scale(1) rotateX(0deg);
+            }
+            50% {
+                transform: scale(1.05) rotateX(5deg);
+            }
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a3e 100%);
             color: #fff;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            perspective: 1200px;
         }
 
         .container {
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: #ff6b35;
+            color: #fff;
+            transform: translateX(-5px);
         }
 
         .card {
             background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 107, 53, 0.3);
+            border: 2px solid rgba(255, 107, 53, 0.4);
             border-radius: 20px;
             padding: 40px;
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: slideInFromTop 0.8s ease-out;
+            transform-style: preserve-3d;
             text-align: center;
         }
 
-        .member-name {
-            font-size: 2em;
-            color: #ff6b35;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
         .member-avatar {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2em;
-            margin: 0 auto 25px;
-            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+            font-size: 3em;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            animation: float3D 4s ease-in-out infinite;
+            transform-style: preserve-3d;
         }
 
         h1 {
-            color: #a0a0a0;
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            font-weight: normal;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
+            font-size: 2em;
+            color: #ff6b35;
             margin-bottom: 10px;
-            color: #a0a0a0;
-            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
         }
 
-        select {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid rgba(255, 107, 53, 0.3);
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.3);
+        .member-name {
+            font-size: 1.5em;
             color: #fff;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            font-weight: bold;
         }
 
-        select:focus {
-            outline: none;
-            border-color: #ff6b35;
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+        .motivation-text {
+            font-size: 1.2em;
+            color: #a0a0a0;
+            margin-bottom: 40px;
+            font-style: italic;
         }
 
-        .option-button {
+        .status-options {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .status-btn {
-            padding: 15px;
+            padding: 20px 15px;
             border: 2px solid rgba(255, 107, 53, 0.3);
-            border-radius: 10px;
+            border-radius: 12px;
             background: rgba(0, 0, 0, 0.3);
             color: #a0a0a0;
             cursor: pointer;
             font-size: 1em;
             font-weight: bold;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-transform: uppercase;
+            perspective: 1000px;
         }
 
         .status-btn:hover {
             border-color: #ff6b35;
             color: #ff6b35;
             background: rgba(255, 107, 53, 0.1);
+            transform: translateY(-4px) rotateX(-5deg) scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
         }
 
         .status-btn.active {
             background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
             border-color: #ff6b35;
             color: #fff;
-            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            animation: pulse3D 0.6s ease-out;
+            transform: translateY(-2px) rotateX(3deg) scale(1.1);
         }
 
         .submit-btn {
             width: 100%;
             padding: 15px;
             background: linear-gradient(135deg, #ff6b35 0%, #ff8560 100%);
-            color: #fff;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: bold;
             font-size: 1.1em;
-            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
         }
 
-        .submit-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
         }
 
-        .submit-btn:active {
-            transform: scale(0.98);
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .cancel-btn {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 107, 53, 0.2);
-            color: #ff6b35;
-            border: 1px solid #ff6b35;
-            border-radius: 10px;
-            font-size: 0.95em;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        .cancel-btn:hover {
-            background: rgba(255, 107, 53, 0.4);
-        }
-
-        .date-display {
-            color: #a0a0a0;
-            font-size: 0.95em;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
+        .quote {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 107, 53, 0.1);
+            border-left: 4px solid #ff6b35;
             border-radius: 8px;
+            font-size: 1em;
+            color: #ff6b35;
+            font-weight: bold;
+            font-style: italic;
         }
 
-        @media (max-width: 480px) {
-            .card {
-                padding: 25px;
+        @media (max-width: 768px) {
+            .status-options {
+                grid-template-columns: 1fr;
             }
-
-            .member-avatar {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5em;
-            }
-
-            .member-name {
+            h1 {
                 font-size: 1.5em;
             }
         }
@@ -200,56 +210,56 @@
 </head>
 <body>
     <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+        
         <div class="card">
-            <div class="member-avatar">{{ member_name[0] | upper }}</div>
+            <div class="member-avatar">💪</div>
             <h1>Mark Attendance</h1>
             <div class="member-name">{{ member_name }}</div>
-            
-            <div class="date-display">
-                📅 <strong id="current-date"></strong>
-            </div>
+            <p class="motivation-text">"Every rep counts! Push your limits today!"</p>
 
-            <form method="POST" id="attendanceForm">
-                <div class="form-group">
-                    <label>Attendance Status</label>
-                    <div class="option-button">
-                        <button type="button" class="status-btn active" data-status="Present">
-                            ✓ Present
-                        </button>
-                        <button type="button" class="status-btn" data-status="Absent">
-                            ✗ Absent
-                        </button>
-                        <button type="button" class="status-btn" data-status="Leave">
-                            ~ Leave
-                        </button>
-                        <button type="button" class="status-btn" data-status="Late">
-                            🕐 Late
-                        </button>
-                    </div>
-                    <input type="hidden" name="status" id="statusInput" value="Present">
+            <form method="POST" onsubmit="return validateForm()">
+                <div class="status-options">
+                    <button type="button" class="status-btn" data-status="Present" onclick="selectStatus(this)">
+                        ✅<br>Present
+                    </button>
+                    <button type="button" class="status-btn" data-status="Leave" onclick="selectStatus(this)">
+                        📍<br>Leave
+                    </button>
+                    <button type="button" class="status-btn" data-status="Absent" onclick="selectStatus(this)">
+                        ❌<br>Absent
+                    </button>
                 </div>
 
-                <button type="submit" class="submit-btn">✓ Mark Attendance</button>
-                <a href="/" class="cancel-btn">⬅ Cancel</a>
+                <input type="hidden" name="status" id="statusInput" required>
+                <button type="submit" class="submit-btn">Confirm Attendance ✔️</button>
             </form>
+
+            <div class="quote">
+                💯 "The pain you feel today will be the strength you feel tomorrow!" 💪
+            </div>
         </div>
     </div>
 
     <script>
-        // Set current date
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const today = new Date().toLocaleDateString('en-US', options);
-        document.getElementById('current-date').textContent = today;
+        function selectStatus(btn) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            btn.classList.add('active');
+            
+            // Set the hidden input value
+            document.getElementById('statusInput').value = btn.dataset.status;
+        }
 
-        // Handle status button clicks
-        document.querySelectorAll('.status-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('statusInput').value = btn.getAttribute('data-status');
-            });
-        });
+        function validateForm() {
+            if (!document.getElementById('statusInput').value) {
+                alert('Please select your attendance status');
+                return false;
+            }
+            return true;
+        }
     </script>
 </body>
 </html>
