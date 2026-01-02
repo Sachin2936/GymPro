@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Goals Dashboard - FitZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 25px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: #ff6b35;
+            color: #fff;
+            transform: translateX(-5px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 3px solid #4caf50;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #4caf50;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(76, 175, 80, 0.15);
+            border-color: #4caf50;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4caf50;
+        }
+
+        h2 {
+            color: #4caf50;
+            margin-bottom: 20px;
+            font-family: 'Poppins', sans-serif;
+            margin-top: 40px;
+        }
+
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .goal-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .goal-card:hover {
+            background: rgba(76, 175, 80, 0.15);
+            border-color: #4caf50;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.2);
+        }
+
+        .member-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .goal-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(76, 175, 80, 0.2);
+        }
+
+        .info-label {
+            color: #a0a0a0;
+            font-size: 0.9em;
+        }
+
+        .info-value {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .goal-type-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .badge-loss {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+        }
+
+        .badge-gain {
+            background: rgba(255, 107, 53, 0.3);
+            color: #ff6b35;
+        }
+
+        .progress-bar {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4caf50, #66bb6a);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .view-profile-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+
+        .view-profile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .no-goals {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0a0a0;
+        }
+
+        .no-goals h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px 0;
+            color: #a0a0a0;
+            border-top: 2px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .motivation {
+            font-size: 1em;
+            color: #4caf50;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8em; }
+            .goals-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+
+        <header>
+            <h1>🎯 Member Fitness Goals</h1>
+            <p class="subtitle">Track your members' weight loss and gain goals</p>
+        </header>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-label">Active Goals</div>
+                <div class="stat-value">{{ total_goals }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-label">Achieved</div>
+                <div class="stat-value">{{ achieved_goals }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📉</div>
+                <div class="stat-label">Weight Loss</div>
+                <div class="stat-value">{{ weight_loss_members }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-label">Weight Gain</div>
+                <div class="stat-value">{{ weight_gain_members }}</div>
+            </div>
+        </div>
+
+        <!-- GOALS SECTION -->
+        {% if members_with_goals %}
+        <h2>💪 Member Goals Overview</h2>
+        <div class="goals-grid">
+            {% for member in members_with_goals %}
+                {% if member[3] %}  <!-- Only show if goal_type exists -->
+                <div class="goal-card">
+                    <div class="member-name">{{ member[1] }}</div>
+                    
+                    <div class="goal-info">
+                        <div class="info-item" style="border:none;">
+                            <span class="goal-type-badge {% if member[3] == 'weight_loss' %}badge-loss{% else %}badge-gain{% endif %}">
+                                {% if member[3] == 'weight_loss' %}📉 Weight Loss{% else %}📈 Weight Gain{% endif %}
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Start Weight</span>
+                            <span class="info-value">{{ member[2] }} kg</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Target Weight</span>
+                            <span class="info-value">{{ member[4] }} kg</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Deadline</span>
+                            <span class="info-value">{{ member[5] }}</span>
+                        </div>
+                    </div>
+                    
+                    <a href="/member/{{ member[0] }}" class="view-profile-btn">📊 View Profile</a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-goals">
+            <h2>🎯 No Active Goals</h2>
+            <p>No members have set their fitness goals yet. Encourage them to start their journey!</p>
+        </div>
+        {% endif %}
+
+        <footer>
+            <p class="motivation">🎯 "Goals without deadlines are just dreams. Let's make them real!" 🎯</p>
+            <p>&copy; 2025 FitZone Gym Management. Keep Growing!</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -450,9 +450,30 @@
     <div class="container">
         <!-- HEADER -->
         <header>
-            <h1>💪 FitZone</h1>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <div>
+                    <h1>💪 FitZone</h1>
+                    <p style="font-size:0.9em;color:#ccc;margin-top:5px;">
+                        {% if session.gym_name %}
+                            <strong>{{ session.gym_name }}</strong> - Managed by {{ session.owner_name }}
+                        {% endif %}
+                    </p>
+                </div>
+                <a href="/logout" style="background:#ff6b35;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;transition:all 0.3s ease;" onmouseover="this.style.background='#e55a25'" onmouseout="this.style.background='#ff6b35'">
+                    Logout
+                </a>
+            </div>
+            
             <p class="tagline">Professional Gym Management System</p>
             <p class="motto">"No Pain, No Gain - Transform Your Body, Transform Your Life"</p>
+            
+            <!-- QUICK SEARCH -->
+            <div style="margin-top:30px;">
+                <form method="GET" action="/search" style="display:flex;gap:10px;max-width:500px;margin:0 auto;">
+                    <input type="text" name="q" placeholder="🔍 Quick search member..." style="flex:1;padding:12px 15px;background:rgba(255,255,255,0.1);border:2px solid #ff6b35;border-radius:8px;color:#fff;font-size:0.95em;" required>
+                    <button type="submit" style="padding:12px 20px;background:#ff6b35;border:none;border-radius:8px;color:#fff;font-weight:bold;cursor:pointer;transition:all 0.3s ease;">Find</button>
+                </form>
+            </div>
         </header>
 
         <!-- STATS -->
@@ -501,9 +522,12 @@
         <!-- MEMBERS SECTION -->
         <div class="members-header">
             <h2>💪 Your Champions</h2>
-            <div style="display:flex;gap:10px;">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
                 <button class="add-member-btn" onclick="openModal()">+ Add New Member</button>
-                <a href="/inactive-members" class="add-member-btn" style="background:rgba(160,160,160,.2);border:1px solid #a0a0a0;color:#a0a0a0;">👻 Inactive Members</a>
+                <a href="/goals" class="add-member-btn" style="background:rgba(76,175,80,.2);border:1px solid #4caf50;color:#4caf50;">🎯 Fitness Goals</a>
+                <a href="/leaderboard" class="add-member-btn" style="background:rgba(255,215,0,.2);border:1px solid #ffd700;color:#ffd700;">🏆 Leaderboard</a>
+                <a href="/statistics" class="add-member-btn" style="background:rgba(100,200,255,.2);border:1px solid #64c8ff;color:#64c8ff;">📊 Analytics</a>
+                <a href="/inactive-members" class="add-member-btn" style="background:rgba(160,160,160,.2);border:1px solid #a0a0a0;color:#a0a0a0;">👻 Inactive</a>
             </div>
         </div>
 
@@ -609,5 +633,31 @@
             };
         });
     </script>
+
+    <!-- Footer with Creator Attribution -->
+    <footer style="
+        margin-top: 100px;
+        padding: 40px 20px;
+        text-align: center;
+        border-top: 2px solid #ff6b35;
+        background: rgba(15, 15, 30, 0.95);
+        color: #aaa;
+        font-size: 14px;
+        position: relative;
+        z-index: 1;
+    ">
+        <p style="margin-bottom: 10px;">
+            <strong style="color: #ff6b35;">GymPro</strong> - Professional Gym Management System
+        </p>
+        <p style="margin-bottom: 15px; font-size: 13px; color: #888;">
+            Made with 💪 by <strong style="color: #ff6b35;">Sachin Singh</strong>
+        </p>
+        <p style="font-size: 12px; color: #666;">
+            © 2026 GymPro. All rights reserved. | Multi-tenant SaaS Platform
+        </p>
+        <p style="margin-top: 15px; font-size: 12px; color: #555;">
+            <span style="display: inline-block; margin: 0 10px;">📧 Contact: sachin31033@gmail.com</span>
+        </p>
+    </footer>
 </body>
 </html>

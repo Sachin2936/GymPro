@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Search - FitZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 25px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: #ff6b35;
+            color: #fff;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ff6b35;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            background: rgba(255, 107, 53, 0.15);
+            border-color: #ff8c42;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        }
+
+        input[type="text"]::placeholder {
+            color: #a0a0a0;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: #ff6b35;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background: #ff8c42;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .results-count {
+            color: #a0a0a0;
+            margin-bottom: 20px;
+            font-size: 1.05em;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-card:hover {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: #ff6b35;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.2);
+        }
+
+        .result-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .result-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .result-detail {
+            color: #a0a0a0;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-detail strong {
+            color: #ff6b35;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 10px;
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            color: #4caf50;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-small:hover {
+            background: #4caf50;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-results-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .no-results-text {
+            color: #a0a0a0;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .no-results-hint {
+            color: #888;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+
+        <header>
+            <h1>🔍 Search Members</h1>
+        </header>
+
+        <div class="search-box">
+            <form style="display:flex;gap:10px;width:100%;" method="GET">
+                <input type="text" name="q" placeholder="Search by name, phone, or email..." value="{{ query }}" required>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        {% if query %}
+            {% if results %}
+            <div class="results-count">
+                Found <strong>{{ results|length }}</strong> result{{ 's' if results|length != 1 else '' }}
+            </div>
+
+            <div class="results-grid">
+                {% for member in results %}
+                <div class="result-card">
+                    <div class="result-avatar">{{ member[1][0].upper() }}</div>
+                    <div class="result-name">{{ member[1] }}</div>
+                    <div class="result-detail">
+                        <strong>📞</strong> {{ member[2] }}
+                    </div>
+                    <div class="result-detail">
+                        <strong>📧</strong> {{ member[3] }}
+                    </div>
+                    <div class="result-detail">
+                        <strong>📅</strong> Joined {{ member[4] }}
+                    </div>
+                    <div class="result-detail">
+                        {% if member[6] == 'active' %}
+                        <strong style="color:#4caf50;">🟢</strong> Active
+                        {% else %}
+                        <strong style="color:#888;">🔴</strong> Inactive
+                        {% endif %}
+                    </div>
+                    <div class="result-actions">
+                        <a href="/member/{{ member[0] }}" class="btn-small">📊 Profile</a>
+                        {% if member[6] == 'active' %}
+                        <a href="/attendance/{{ member[0] }}" class="btn-small">✅ Attend</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-results">
+                <div class="no-results-icon">🔎</div>
+                <div class="no-results-text">No members found matching "{{ query }}"</div>
+                <div class="no-results-hint">
+                    Try searching with:<br>
+                    • Member name<br>
+                    • Phone number<br>
+                    • Email address
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+        <div class="no-results">
+            <div class="no-results-icon">🔍</div>
+            <div class="no-results-text">Enter a search term to find members</div>
+            <div class="no-results-hint">
+                Search your gym members by:<br>
+                • Name<br>
+                • Phone number<br>
+                • Email address
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

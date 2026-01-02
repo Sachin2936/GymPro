@@ -238,6 +238,75 @@
     </div>
     {% endif %}
 
+    <!-- FITNESS GOAL SECTION -->
+    <div class="section" id="goal-section" style="background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.3);">
+        <h4 style="color:#4caf50;">🎯 Fitness Goal</h4>
+        
+        {% if goal %}
+        <!-- Display Current Goal -->
+        <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:20px;margin-bottom:20px;">
+            <div class="info-row" style="border:none;">
+                <span>Goal Type</span>
+                <span style="color:#4caf50;font-weight:bold;">{{ '📈 Weight Gain' if goal[0] == 'weight_gain' else '📉 Weight Loss' }}</span>
+            </div>
+            <div class="info-row" style="border:none;">
+                <span>Target Weight</span>
+                <span style="color:#4caf50;font-weight:bold;">{{ goal[1] }} kg</span>
+            </div>
+            <div class="info-row" style="border:none;">
+                <span>Deadline</span>
+                <span style="color:#4caf50;font-weight:bold;">{{ goal[2] }}</span>
+            </div>
+            {% if weight_logs %}
+                {% set current_weight = weight_logs[0][1] %}
+                {% set difference = current_weight - goal[1] %}
+                <div class="info-row" style="border:none;">
+                    <span>Progress</span>
+                    <span style="color:{% if goal[0] == 'weight_loss' and difference <= 0 %}#4caf50{% elif goal[0] == 'weight_gain' and difference >= 0 %}#4caf50{% else %}#ff6b35{% endif %};font-weight:bold;">
+                        {% if difference == 0 %}🎉 Target Reached!{% elif difference < 0 %}{{ difference|abs }} kg remaining{% else %}{{ difference }} kg away{% endif %}
+                    </span>
+                </div>
+                {% set progress_percentage = ((goal[1] - member[5])|abs / (current_weight - member[5])|abs * 100) if (current_weight - member[5]) != 0 else 0 %}
+                <div style="margin-top:15px;">
+                    <div style="background:rgba(0,0,0,.3);border-radius:10px;height:20px;overflow:hidden;">
+                        <div style="background:linear-gradient(90deg,#4caf50,#66bb6a);height:100%;width:{{ [progress_percentage, 100]|min }}%;transition:width 0.3s ease;"></div>
+                    </div>
+                    <p style="color:#a0a0a0;font-size:0.85em;margin-top:8px;">Progress: {{ [progress_percentage, 100]|min|int }}%</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Update Goal Form -->
+        <form method="POST" action="/set-goal/{{ member[0] }}" style="display:flex;flex-direction:column;gap:12px;">
+            <h5 style="color:#4caf50;margin-top:15px;">Update Goal</h5>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <select name="goal_type" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;">
+                    <option value="weight_loss" {% if goal and goal[0] == 'weight_loss' %}selected{% endif %}>📉 Weight Loss</option>
+                    <option value="weight_gain" {% if goal and goal[0] == 'weight_gain' %}selected{% endif %}>📈 Weight Gain</option>
+                </select>
+                <input type="number" name="target_weight" placeholder="Target Weight (kg)" step="0.5" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;" value="{{ goal[1] if goal else '' }}">
+                <input type="date" name="deadline" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;" value="{{ goal[2] if goal else '' }}">
+                <button type="submit" class="btn-primary" style="background:linear-gradient(135deg,#4caf50,#66bb6a);padding:10px 20px;">💾 Update Goal</button>
+            </div>
+        </form>
+        {% else %}
+        <!-- Set New Goal Form -->
+        <form method="POST" action="/set-goal/{{ member[0] }}" style="display:flex;flex-direction:column;gap:12px;">
+            <p style="color:#a0a0a0;margin-bottom:10px;">No goal set yet. Create one now!</p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <select name="goal_type" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;">
+                    <option value="">Select Goal Type</option>
+                    <option value="weight_loss">📉 Weight Loss</option>
+                    <option value="weight_gain">📈 Weight Gain</option>
+                </select>
+                <input type="number" name="target_weight" placeholder="Target Weight (kg)" step="0.5" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;">
+                <input type="date" name="deadline" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;">
+                <button type="submit" class="btn-primary" style="background:linear-gradient(135deg,#4caf50,#66bb6a);padding:10px 20px;">🎯 Set Goal</button>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+
     <!-- WEIGHT TRACKING SECTION -->
     <div class="section" id="weight-section">
         <h4>⚖️ Weight Tracking & Progress</h4>

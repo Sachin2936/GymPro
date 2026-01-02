@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Leaderboard - FitZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 25px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: #ff6b35;
+            color: #fff;
+            transform: translateX(-5px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 3px solid #ffd700;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            color: #ffd700;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1em;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .leaderboard-table thead {
+            background: rgba(76, 175, 80, 0.2);
+            border-bottom: 2px solid #4caf50;
+        }
+
+        .leaderboard-table th {
+            padding: 20px;
+            text-align: left;
+            color: #4caf50;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+        }
+
+        .leaderboard-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-table tbody tr:hover {
+            background: rgba(76, 175, 80, 0.1);
+            transform: translateX(5px);
+        }
+
+        .rank {
+            font-size: 1.5em;
+            font-weight: bold;
+            width: 50px;
+            text-align: center;
+        }
+
+        .rank-1 { color: #ffd700; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
+        .rank-other { color: #a0a0a0; }
+
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .member-name {
+            font-weight: 700;
+            font-size: 1.05em;
+        }
+
+        .member-goal-type {
+            font-size: 0.85em;
+            color: #a0a0a0;
+        }
+
+        .stat {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50 0%, #8bc34a 100%);
+            transition: width 0.4s ease;
+        }
+
+        .trophy-icon {
+            font-size: 1.8em;
+        }
+
+        .medal {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .medal-1 {
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px solid #ffd700;
+            color: #ffd700;
+        }
+
+        .medal-2 {
+            background: rgba(192, 192, 192, 0.2);
+            border: 2px solid #c0c0c0;
+            color: #c0c0c0;
+        }
+
+        .medal-3 {
+            background: rgba(205, 127, 50, 0.2);
+            border: 2px solid #cd7f32;
+            color: #cd7f32;
+        }
+
+        .no-leaderboard {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+
+        .no-leaderboard p {
+            color: #a0a0a0;
+            font-size: 1.1em;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .action-btn:hover {
+            background: #4caf50;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .leaderboard-table {
+                font-size: 0.9em;
+            }
+
+            .leaderboard-table th,
+            .leaderboard-table td {
+                padding: 12px;
+            }
+
+            .member-info {
+                gap: 10px;
+            }
+
+            .member-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+
+        <header>
+            <h1>🏆 Member Leaderboard</h1>
+            <p class="subtitle">Celebrating your most dedicated members</p>
+        </header>
+
+        {% if leaderboard %}
+        <div class="leaderboard-table-wrapper">
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Member</th>
+                        <th>Goal Type</th>
+                        <th>Attendance</th>
+                        <th>Progress</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in leaderboard %}
+                    <tr>
+                        <td>
+                            {% if loop.index == 1 %}
+                            <div class="medal medal-1">🥇</div>
+                            {% elif loop.index == 2 %}
+                            <div class="medal medal-2">🥈</div>
+                            {% elif loop.index == 3 %}
+                            <div class="medal medal-3">🥉</div>
+                            {% else %}
+                            <span class="rank rank-other">#{{ loop.index }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="member-info">
+                                <div class="member-avatar">{{ item.member[1][0].upper() }}</div>
+                                <div>
+                                    <div class="member-name">{{ item.member[1] }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if item.goal %}
+                                {% if item.goal[2] == 'weight_loss' %}
+                                <span style="background:rgba(76,175,80,.2);padding:5px 10px;border-radius:5px;color:#4caf50;font-size:0.9em;">💪 Weight Loss</span>
+                                {% else %}
+                                <span style="background:rgba(255,193,7,.2);padding:5px 10px;border-radius:5px;color:#ffc107;font-size:0.9em;">🍗 Weight Gain</span>
+                                {% endif %}
+                            {% else %}
+                            <span style="color:#a0a0a0;font-size:0.9em;">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="stat">
+                            <strong style="color:#4caf50;">{{ item.attendance }}</strong>
+                            <div style="font-size:0.85em;color:#a0a0a0;">days</div>
+                        </td>
+                        <td>
+                            <div class="stat">
+                                <strong style="color:#8bc34a;">{{ item.progress }}%</strong>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width:{{ item.progress }}%;"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="/insights/{{ item.member[0] }}" class="action-btn">View Details</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-leaderboard">
+            <p>📊 No active members to display on leaderboard</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
