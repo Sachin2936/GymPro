@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 Inactive Members - FitZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 25px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: #ff6b35;
+            color: #fff;
+            transform: translateX(-5px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 3px solid #a0a0a0;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #a0a0a0;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1em;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .member-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(160, 160, 160, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            transition: all 0.4s ease;
+            opacity: 0.8;
+        }
+
+        .member-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #a0a0a0;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(160, 160, 160, 0.2);
+            opacity: 1;
+        }
+
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a0a0a0, #c0c0c0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            margin: 0 auto 15px;
+            box-shadow: 0 5px 20px rgba(160, 160, 160, 0.3);
+        }
+
+        .member-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #a0a0a0;
+            margin-bottom: 10px;
+        }
+
+        .member-info {
+            color: #a0a0a0;
+            font-size: 0.85em;
+            margin-bottom: 15px;
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+
+        .btn-reactivate {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: #fff;
+        }
+
+        .btn-reactivate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ff4343, #ff6666);
+            color: #fff;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 67, 67, 0.4);
+        }
+
+        .no-members {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0a0a0;
+        }
+
+        .no-members h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .no-members p {
+            font-size: 1.1em;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px 0;
+            color: #a0a0a0;
+            border-top: 2px solid rgba(160, 160, 160, 0.3);
+        }
+
+        .motivation {
+            font-size: 1em;
+            color: #a0a0a0;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8em; }
+            .members-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+
+        <header>
+            <h1>📋 Inactive Members</h1>
+            <p class="subtitle">Members who have left the gym</p>
+        </header>
+
+        {% if inactive_members %}
+        <div class="members-grid">
+            {% for member in inactive_members %}
+            <div class="member-card">
+                <div class="member-avatar">{{ member[1][0].upper() }}</div>
+                <div class="member-name">{{ member[1] }}</div>
+                <div class="member-info">
+                    <p>Joined: {{ member[4] }}</p>
+                    <p>Phone: {{ member[2] or 'N/A' }}</p>
+                    <p style="color: #ff6b35; margin-top: 10px;"><strong>Status: Inactive</strong></p>
+                </div>
+                <div class="member-actions">
+                    <form action="/reactivate-member/{{ member[0] }}" method="POST" style="flex: 1;">
+                        <button type="submit" class="btn btn-reactivate" style="width: 100%;">✅ Reactivate</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-members">
+            <h2>✨ All members are active!</h2>
+            <p>No inactive members at this time. Great job!</p>
+        </div>
+        {% endif %}
+
+        <footer>
+            <p class="motivation">💪 "Members come and go, but the gym goes on!" 💪</p>
+            <p>&copy; 2025 FitZone Gym Management. Keep Growing!</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Profit Dashboard - FitZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 25px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: #ff6b35;
+            color: #fff;
+            transform: translateX(-5px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 3px solid #4caf50;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #4caf50;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(76, 175, 80, 0.15);
+            border-color: #4caf50;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4caf50;
+        }
+
+        h2 {
+            color: #4caf50;
+            margin-bottom: 20px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .profit-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .profit-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #4caf50;
+            transition: all 0.3s ease;
+        }
+
+        .profit-item:hover {
+            background: rgba(76, 175, 80, 0.1);
+            transform: translateX(5px);
+        }
+
+        .profit-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .profit-member {
+            font-weight: bold;
+            color: #4caf50;
+            font-size: 1.1em;
+        }
+
+        .profit-date {
+            color: #a0a0a0;
+            font-size: 0.9em;
+        }
+
+        .profit-amount {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #4caf50;
+        }
+
+        .no-records {
+            text-align: center;
+            padding: 40px;
+            color: #a0a0a0;
+            font-size: 1.1em;
+        }
+
+        .profit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .profit-card {
+            background: rgba(76, 175, 80, 0.15);
+            border: 2px solid rgba(76, 175, 80, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .profit-card:hover {
+            background: rgba(76, 175, 80, 0.25);
+            border-color: #4caf50;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+
+        .member-name {
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .payment-count {
+            color: #a0a0a0;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .total-amount {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #4caf50;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px 0;
+            color: #a0a0a0;
+            border-top: 2px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .motivation {
+            font-size: 1em;
+            color: #4caf50;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8em; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .profit-grid { grid-template-columns: 1fr; }
+            .profit-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+
+        <header>
+            <h1>💰 Profit Dashboard</h1>
+            <p class="subtitle">Track your gym's revenue and earnings</p>
+        </header>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">💵</div>
+                <div class="stat-label">Total Profit</div>
+                <div class="stat-value">₹{{ total_profit|int }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-label">Total Payments</div>
+                <div class="stat-value">{{ profit_entries|length }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-label">Paying Members</div>
+                <div class="stat-value">{{ profit_by_member|length }}</div>
+            </div>
+        </div>
+
+        <!-- PROFIT BY MEMBER -->
+        {% if profit_by_member %}
+        <div class="section">
+            <h2>📈 Profit by Member</h2>
+            <div class="profit-grid">
+                {% for member in profit_by_member %}
+                <div class="profit-card">
+                    <div class="member-name">{{ member[0] }}</div>
+                    <div class="payment-count">{{ member[1] }} payment{{ 's' if member[1] != 1 else '' }}</div>
+                    <div class="total-amount">₹{{ member[2]|int }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- RECENT PAYMENTS -->
+        <div class="section">
+            <h2>💳 Recent Payments</h2>
+            {% if profit_entries %}
+            <div class="profit-list">
+                {% for payment in profit_entries %}
+                <div class="profit-item">
+                    <div class="profit-info">
+                        <span class="profit-member">{{ payment[0] }}</span>
+                        <span class="profit-date">{{ payment[2] }}</span>
+                    </div>
+                    <span class="profit-amount">+ ₹{{ payment[1]|int }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-records">
+                No payment records yet
+            </div>
+            {% endif %}
+        </div>
+
+        <footer>
+            <p class="motivation">💪 "Every payment builds a stronger business!" 💪</p>
+            <p>&copy; 2025 FitZone Gym Management. Keep Growing!</p>
+        </footer>
+    </div>
+</body>
+</html>

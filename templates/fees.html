@@ -190,14 +190,18 @@
 
         .fee-card.overdue {
             border-left: 5px solid #ff4343;
+            background: rgba(255, 67, 67, 0.1);
         }
 
         .fee-card.reminder {
             border-left: 5px solid #ffc107;
+            background: rgba(255, 193, 7, 0.1);
         }
 
         .fee-card.paid {
             border-left: 5px solid #4caf50;
+            opacity: 0.8;
+        }
         }
 
         .fee-info {
@@ -251,6 +255,50 @@
             font-size: 0.9em;
         }
 
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.pending {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .status-badge.paid {
+            background: #4caf50;
+            color: #fff;
+        }
+
+        .status-badge.overdue {
+            background: #ff4343;
+            color: #fff;
+        }
+
+        .mark-paid-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+
+        .mark-paid-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+
         .no-records {
             text-align: center;
             padding: 40px;
@@ -293,14 +341,14 @@
         <!-- STATS -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">💰</div>
-                <div class="stat-label">Total Revenue</div>
-                <div class="stat-value">₹45,000</div>
+                <div class="stat-icon">💵</div>
+                <div class="stat-label">Total Profit</div>
+                <div class="stat-value">₹{{ total_profit|int }}</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">⏳</div>
                 <div class="stat-label">Pending Payments</div>
-                <div class="stat-value">₹12,000</div>
+                <div class="stat-value">{{ pending_fees|length }}</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">⚠️</div>
@@ -310,12 +358,12 @@
         </div>
 
         <!-- FEE LIST -->
-        <h2 style="color: #ff6b35; margin-bottom: 20px; font-family: 'Poppins', sans-serif;">📋 Pending Payments</h2>
+        <h2 style="color: #ff6b35; margin-bottom: 20px; font-family: 'Poppins', sans-serif;">📋 All Payments</h2>
         
         {% if pending_fees %}
         <div class="fee-list">
             {% for fee in pending_fees %}
-            <div class="fee-card {% if fee[4] < now %}overdue{% elif fee[4] <= reminder_date %}reminder{% else %}paid{% endif %}">
+            <div class="fee-card">
                 <div class="fee-info">
                     <div class="member-avatar">{{ fee[2][0].upper() }}</div>
                     <div class="member-details">
@@ -326,8 +374,9 @@
                 <div class="fee-amount">
                     <div class="amount-value">₹{{ fee[3]|int }}</div>
                     <div class="due-date">Due: {{ fee[4] }}</div>
-                    <form action="/pay-fees/{{ fee[1] }}" method="POST" style="margin-top:8px;">
-                        <button type="submit" class="btn-primary" style="padding:6px 16px;font-size:0.95em;">Mark Fee Paid</button>
+                    <span class="status-badge pending">📌 Pending</span>
+                    <form action="/pay-fees/{{ fee[1] }}" method="POST">
+                        <button type="submit" class="mark-paid-btn">✅ Mark as Paid</button>
                     </form>
                 </div>
             </div>
@@ -336,6 +385,30 @@
         {% else %}
         <div class="no-records">
             ✅ All payments are current! Excellent work!
+        </div>
+        {% endif %}
+
+        <!-- RECENT PROFIT PAYMENTS -->
+        {% if profit_entries %}
+        <h2 style="color: #4caf50; margin: 40px 0 20px 0; font-family: 'Poppins', sans-serif;">✅ Recent Paid Payments</h2>
+        <div class="fee-list">
+            {% for payment in profit_entries %}
+            <div class="fee-card" style="border-left: 5px solid #4caf50; background: rgba(76, 175, 80, 0.1);">
+                <div class="fee-info">
+                    <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#4caf50,#66bb6a);display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;">
+                        {{ payment[0][0].upper() }}
+                    </div>
+                    <div style="margin-left: 20px;">
+                        <h3 style="color:#4caf50;">{{ payment[0] }}</h3>
+                        <a href="#" style="color:#a0a0a0;text-decoration:none;font-size:0.9em;">Paid on {{ payment[2] }}</a>
+                    </div>
+                </div>
+                <div class="fee-amount">
+                    <div class="amount-value" style="color: #4caf50;">+ ₹{{ payment[1]|int }}</div>
+                    <span class="status-badge paid">✅ Received</span>
+                </div>
+            </div>
+            {% endfor %}
         </div>
         {% endif %}
 
@@ -350,3 +423,4 @@
     </script>
 </body>
 </html>
+

@@ -54,6 +54,16 @@ def create_tables():
             paid_status TEXT DEFAULT 'pending'
         )""")
 
+        db.execute("""
+        CREATE TABLE IF NOT EXISTS profits (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            member_id INTEGER,
+            amount REAL,
+            payment_date TEXT,
+            fee_id INTEGER,
+            UNIQUE(fee_id)
+        )""")
+
 create_tables()
 
 # ---------------- HOME ----------------
@@ -73,16 +83,25 @@ def index():
             AND f.next_due BETWEEN date(?, '+2 day') AND date(?, '+3 day')
         """, (today, today)).fetchall()
 
-        overdue = db.execute("""
-            SELECT m.id, m.name, f.next_due, f.amount
-            FROM fees f JOIN members m ON f.member_id=m.id
-            WHERE f.paid_status='pending' AND f.next_due < ?
-        """, (today,)).fetchall()
+        # Get total profits
+        total_profit = db.execute(
+            "SELECT COALESCE(SUM(amount), 0) FROM profits"
+        ).fetchone()[0]
 
     return render_template("index.html",
                            members=members,
                            reminders=reminders,
-                           overdue=overdue)
+                           total_profit=total_profit)
+
+# ---------------- INACTIVE MEMBERS ----------------
+@app.route("/inactive-members")
+def inactive_members():
+    with get_db() as db:
+        inactive = db.execute(
+            "SELECT * FROM members WHERE status='inactive' ORDER BY name"
+        ).fetchall()
+
+    return render_template("inactive_members.html", inactive_members=inactive)
 
 # ---------------- ADD MEMBER ----------------
 @app.route("/add-member", methods=["POST"])
@@ -128,7 +147,7 @@ def member_details(member_id):
 
         weight_logs = db.execute("""
             SELECT month, weight FROM weight_logs
-            WHERE member_id=? ORDER BY month DESC LIMIT 6
+            WHERE member_id=? ORDER BY month DESC
         """, (member_id,)).fetchall()
 
         fees = db.execute("""
@@ -187,22 +206,46 @@ def attendance(member_id):
 # ---------------- ADD WEIGHT ----------------
 @app.route("/add-weight", methods=["POST"])
 def add_weight():
+    member_id = request.form.get("member_id")
+    weight = request.form.get("weight")
+    
+    if not member_id or not weight:
+        flash("Invalid weight data", "error")
+        return redirect(f"/member/{member_id}")
+    
+    try:
+        weight = float(weight)
+    except ValueError:
+        flash("Invalid weight value", "error")
+        return redirect(f"/member/{member_id}")
+    
+    today = datetime.now().strftime("%Y-%m-%d")
+    
     with get_db() as db:
         db.execute("""
             INSERT INTO weight_logs (member_id, month, weight)
             VALUES (?, ?, ?)
-        """, (
-            request.form["member_id"],
-            request.form["month"],
-            request.form["weight"]
-        ))
+        """, (member_id, today, weight))
 
-    flash("Weight updated", "success")
-    return redirect(f"/member/{request.form['member_id']}")
+    flash("Weight updated successfully 💪", "success")
+    return redirect(f"/member/{member_id}")
 
 # ---------------- ADD FEES ----------------
 @app.route("/add-fees", methods=["POST"])
 def add_fees():
+    member_id = request.form.get("member_id")
+    amount = request.form.get("amount")
+
+    if not member_id or not amount:
+        flash("Invalid fee data", "error")
+        return redirect("/")
+
+    try:
+        amount = float(amount)
+    except ValueError:
+        flash("Invalid amount", "error")
+        return redirect("/")
+
     last_paid = datetime.now()
     next_due = last_paid + timedelta(days=30)
 
@@ -211,14 +254,70 @@ def add_fees():
             INSERT INTO fees (member_id, amount, last_paid, next_due, paid_status)
             VALUES (?, ?, ?, ?, 'paid')
         """, (
-            request.form["member_id"],
-            request.form["amount"],
+            member_id,
+            amount,
             last_paid.strftime("%Y-%m-%d"),
             next_due.strftime("%Y-%m-%d")
         ))
 
-    flash("Payment recorded", "success")
-    return redirect(f"/member/{request.form['member_id']}")
+        # Get the fee id that was just inserted
+        fee_id = db.execute(
+            "SELECT id FROM fees WHERE member_id = ? ORDER BY id DESC LIMIT 1",
+            (member_id,)
+        ).fetchone()[0]
+
+        # Add to profits
+        db.execute("""
+            INSERT INTO profits (member_id, amount, payment_date, fee_id)
+            VALUES (?, ?, ?, ?)
+        """, (
+            member_id,
+            amount,
+            last_paid.strftime("%Y-%m-%d"),
+            fee_id
+        ))
+
+    flash("Fee added successfully 💰", "success")
+    return redirect(f"/member/{member_id}")
+
+# ---------------- MARK FEE AS PAID ----------------
+@app.route("/pay-fees/<int:member_id>", methods=["POST"])
+def pay_fees(member_id):
+    today = datetime.now()
+
+    with get_db() as db:
+        # Get the pending fee to be marked as paid
+        fee = db.execute("""
+            SELECT id, amount FROM fees
+            WHERE member_id = ? AND paid_status = 'pending'
+            ORDER BY next_due DESC
+            LIMIT 1
+        """, (member_id,)).fetchone()
+
+        if fee:
+            fee_id, amount = fee[0], fee[1]
+            
+            # Update the fee status
+            db.execute("""
+                UPDATE fees
+                SET paid_status = 'paid', last_paid = ?
+                WHERE id = ?
+            """, (today.strftime("%Y-%m-%d"), fee_id))
+
+            # Add to profits
+            db.execute("""
+                INSERT OR IGNORE INTO profits (member_id, amount, payment_date, fee_id)
+                VALUES (?, ?, ?, ?)
+            """, (
+                member_id,
+                amount,
+                today.strftime("%Y-%m-%d"),
+                fee_id
+            ))
+
+    flash("Fee marked as paid ✅", "success")
+    return redirect(f"/member/{member_id}")
+
 
 # ---------------- FEES DASHBOARD ----------------
 @app.route("/fees")
@@ -232,15 +331,99 @@ def fees_dashboard():
             WHERE f.paid_status='pending'
         """).fetchall()
 
+        # Get total profit data
+        total_profit = db.execute(
+            "SELECT COALESCE(SUM(amount), 0) FROM profits"
+        ).fetchone()[0]
+
+        profit_entries = db.execute("""
+            SELECT m.name, p.amount, p.payment_date
+            FROM profits p JOIN members m ON p.member_id=m.id
+            ORDER BY p.payment_date DESC
+            LIMIT 20
+        """).fetchall()
+
     overdue_count = sum(1 for f in pending_fees if f["next_due"] < today)
 
     return render_template(
         "fees.html",
         pending_fees=pending_fees,
-        overdue_count=overdue_count
+        overdue_count=overdue_count,
+        total_profit=total_profit,
+        profit_entries=profit_entries
     )
+
+# ---------------- PROFITS DASHBOARD ----------------
+@app.route("/profits")
+def profits_dashboard():
+    with get_db() as db:
+        total_profit = db.execute(
+            "SELECT COALESCE(SUM(amount), 0) FROM profits"
+        ).fetchone()[0]
+
+        profit_entries = db.execute("""
+            SELECT m.name, p.amount, p.payment_date
+            FROM profits p JOIN members m ON p.member_id=m.id
+            ORDER BY p.payment_date DESC
+        """).fetchall()
+
+        # Get profit by member
+        profit_by_member = db.execute("""
+            SELECT m.name, COUNT(*) as payments, SUM(p.amount) as total_amount
+            FROM profits p JOIN members m ON p.member_id=m.id
+            GROUP BY p.member_id
+            ORDER BY total_amount DESC
+        """).fetchall()
+
+    return render_template(
+        "profits.html",
+        total_profit=total_profit,
+        profit_entries=profit_entries,
+        profit_by_member=profit_by_member
+    )
+
+# ---------------- REMOVE MEMBER ----------------
+@app.route("/remove-member/<int:member_id>", methods=["POST"])
+def remove_member(member_id):
+    with get_db() as db:
+        # Get member name before deletion
+        member = db.execute(
+            "SELECT name FROM members WHERE id=?", (member_id,)
+        ).fetchone()
+        
+        if member:
+            # Mark member as inactive instead of deleting
+            db.execute(
+                "UPDATE members SET status='inactive' WHERE id=?",
+                (member_id,)
+            )
+            flash(f"Member '{member['name']}' has been removed from the gym", "success")
+        else:
+            flash("Member not found", "error")
+    
+    return redirect("/")
+
+# ---------------- REACTIVATE MEMBER ----------------
+@app.route("/reactivate-member/<int:member_id>", methods=["POST"])
+def reactivate_member(member_id):
+    with get_db() as db:
+        # Get member name before reactivation
+        member = db.execute(
+            "SELECT name FROM members WHERE id=?", (member_id,)
+        ).fetchone()
+        
+        if member:
+            # Mark member as active again
+            db.execute(
+                "UPDATE members SET status='active' WHERE id=?",
+                (member_id,)
+            )
+            flash(f"Member '{member['name']}' has been reactivated", "success")
+        else:
+            flash("Member not found", "error")
+    
+    return redirect("/inactive-members")
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
-

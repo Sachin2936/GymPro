@@ -132,10 +132,19 @@
             transform-style: preserve-3d;
         }
 
+        .alert-box.fee-reminder {
+            border-left: 5px solid #ffc107;
+            background: rgba(255, 193, 7, 0.15);
+        }
+
         .alert-box h3 {
             color: #ff6b35;
             margin-bottom: 15px;
             font-size: 1.3em;
+        }
+
+        .alert-box.fee-reminder h3 {
+            color: #ffc107;
         }
 
         .alert-item {
@@ -147,6 +156,7 @@
             justify-content: space-between;
             align-items: center;
             animation: pulse3D 2s ease-in-out infinite;
+            border-left: 4px solid #ffc107;
         }
 
         .alert-item:last-child {
@@ -457,35 +467,33 @@
                 <div class="stat-label">Fees Due Soon</div>
                 <div class="stat-value">{{ reminders|length }}</div>
             </div>
-            <div class="stat-card" id="expiringCard" style="cursor:pointer">
-                <div class="stat-icon">⏳</div>
-                <div class="stat-label">Expiring Memberships</div>
-                <div class="stat-value">{{ expiring|length if expiring is defined else 0 }}</div>
+            <div class="stat-card" id="profitCard" style="cursor:pointer" onclick="window.location.href='/profits'">
+                <div class="stat-icon">💰</div>
+                <div class="stat-label">Total Profit</div>
+                <div class="stat-value">₹{{ total_profit|int }}</div>
             </div>
         </div>
 
         <!-- ALERTS -->
         <div class="alerts-section">
             {% if reminders %}
-            <div class="alert-box">
-                <h3>💸 Fees Due Soon (2-3 Days)</h3>
+            <div class="alert-box fee-reminder">
+                <h3>🔔 Gentle Reminder: Fees Due Soon!</h3>
+                <p style="color:#a0a0a0;margin-bottom:15px;font-size:0.9em;">Friendly reminder for members whose fee payment is due in 2-3 days</p>
                 {% for item in reminders %}
                 <div class="alert-item">
-                    <strong>{{ item[1] }}</strong>
-                    <span>₹{{ item[3]|int }} due on {{ item[2] }}</span>
+                    <div>
+                        <strong style="color:#ffc107;">{{ item[1] }}</strong>
+                        <span style="display:block;color:#a0a0a0;font-size:0.85em;">Due: {{ item[2] }}</span>
+                    </div>
+                    <span style="font-weight:bold;color:#ffc107;">₹{{ item[3]|int }}</span>
                 </div>
                 {% endfor %}
             </div>
-            {% endif %}
-            {% if expiring %}
-            <div class="alert-box">
-                <h3>⏳ Expiring Memberships</h3>
-                {% for item in expiring %}
-                <div class="alert-item">
-                    <strong>{{ item[1] }}</strong>
-                    <span>Expires on {{ item[2] }}</span>
-                </div>
-                {% endfor %}
+            {% else %}
+            <div class="alert-box fee-reminder">
+                <h3>✅ All Good!</h3>
+                <p style="color:#a0a0a0;">No pending fee reminders at this time</p>
             </div>
             {% endif %}
         </div>
@@ -493,7 +501,10 @@
         <!-- MEMBERS SECTION -->
         <div class="members-header">
             <h2>💪 Your Champions</h2>
-            <button class="add-member-btn" onclick="openModal()">+ Add New Member</button>
+            <div style="display:flex;gap:10px;">
+                <button class="add-member-btn" onclick="openModal()">+ Add New Member</button>
+                <a href="/inactive-members" class="add-member-btn" style="background:rgba(160,160,160,.2);border:1px solid #a0a0a0;color:#a0a0a0;">👻 Inactive Members</a>
+            </div>
         </div>
 
         <div class="members-grid" id="membersList">
