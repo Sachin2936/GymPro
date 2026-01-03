@@ -317,14 +317,14 @@
 
         <!-- MEMBER HEADER -->
         <header>
-            <div class="member-avatar-large">{{ member[1][0].upper() }}</div>
+            <div class="member-avatar-large">{{ member.name[0].upper() }}</div>
             <div class="member-info">
-                <h1>{{ member[1] }}</h1>
+                <h1>{{ member.name }}</h1>
                 <div class="member-details">
-                    <p><strong>Phone:</strong> {{ member[2] }}</p>
-                    <p><strong>Email:</strong> {{ member[3] }}</p>
-                    <p><strong>Joined:</strong> {{ member[4] }}</p>
-                    <p><strong>Status:</strong> {% if member[6] == 'active' %}<span style="color:#4caf50;">🟢 Active</span>{% else %}<span style="color:#999;">🔴 Inactive</span>{% endif %}</p>
+                    <p><strong>Phone:</strong> {{ member.phone }}</p>
+                    <p><strong>Email:</strong> {{ member.email }}</p>
+                    <p><strong>Joined:</strong> {{ member.join_date }}</p>
+                    <p><strong>Status:</strong> {% if member.status == 'active' %}<span style="color:#4caf50;">🟢 Active</span>{% else %}<span style="color:#999;">🔴 Inactive</span>{% endif %}</p>
                 </div>
             </div>
         </header>

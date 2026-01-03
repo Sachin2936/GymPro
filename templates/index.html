@@ -534,12 +534,12 @@
         <div class="members-grid" id="membersList">
             {% for member in members %}
             <div class="member-card">
-                <div class="member-avatar">{{ member[1][0].upper() }}</div>
-                <div class="member-name">{{ member[1] }}</div>
-                <div class="member-join">Joined: {{ member[4] }}</div>
+                <div class="member-avatar">{{ member.name[0].upper() }}</div>
+                <div class="member-name">{{ member.name }}</div>
+                <div class="member-join">Joined: {{ member.join_date }}</div>
                 <div class="member-actions">
-                    <a href="/member/{{ member[0] }}" class="btn-small">📊 Profile</a>
-                    <a href="/attendance/{{ member[0] }}" class="btn-small">✅ Attend</a>
+                    <a href="/member/{{ member.id }}" class="btn-small">📊 Profile</a>
+                    <a href="/attendance/{{ member.id }}" class="btn-small">✅ Attend</a>
                 </div>
             </div>
             {% endfor %}
@@ -548,12 +548,12 @@
         <div class="members-grid" id="feesDueList" style="display:none">
             {% for item in reminders %}
             <div class="member-card">
-                <div class="member-avatar">{{ item[1][0].upper() }}</div>
-                <div class="member-name">{{ item[1] }}</div>
-                <div class="member-join">Due: {{ item[2] }}</div>
+                <div class="member-avatar">{{ item.name[0].upper() }}</div>
+                <div class="member-name">{{ item.name }}</div>
+                <div class="member-join">Due: {{ item.next_due }}</div>
                 <div class="member-actions">
-                    <a href="/member/{{ item[0] }}" class="btn-small">📊 Profile</a>
-                    <a href="/fees/{{ item[0] }}" class="btn-small">💸 Pay</a>
+                    <a href="/member/{{ item.id }}" class="btn-small">📊 Profile</a>
+                    <a href="/fees/{{ item.id }}" class="btn-small">💸 Pay</a>
                 </div>
             </div>
             {% endfor %}

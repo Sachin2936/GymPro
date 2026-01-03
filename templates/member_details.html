@@ -136,30 +136,30 @@
 
     {% if member %}
     <header>
-        <h1>💪 {{ member[1] }}'s Profile</h1>
-        <div class="member-avatar">{{ member[1][0].upper() }}</div>
+        <h1>💪 {{ member.name }}'s Profile</h1>
+        <div class="member-avatar">{{ member.name[0].upper() }}</div>
     </header>
 
     <!-- QUICK ACTIONS -->
     <div class="action-btns">
-        <a href="/attendance/{{ member[0] }}" class="btn-primary">✅ Mark Attendance</a>
+        <a href="/attendance/{{ member.id }}" class="btn-primary">✅ Mark Attendance</a>
         <a href="#add-fee" class="btn-primary">💳 Add Fee</a>
         <a href="#weight-section" class="btn-primary" style="grid-column:span 1;">⚖️ Track Weight</a>
         <button class="btn-primary remove-btn" onclick="if(confirm('Are you sure you want to remove this member from the gym?')) { document.getElementById('removeMemberForm').submit(); }">🗑️ Remove Member</button>
     </div>
     
     <!-- Hidden form for removing member -->
-    <form id="removeMemberForm" action="/remove-member/{{ member[0] }}" method="POST" style="display:none;"></form>
+    <form id="removeMemberForm" action="/remove-member/{{ member.id }}" method="POST" style="display:none;"></form>
 
     <!-- MEMBER INFO -->
     <div class="profile-grid">
         <div class="card">
             <h3>📋 Personal Info</h3>
-            <div class="info-row"><span>Name</span><span>{{ member[1] }}</span></div>
-            <div class="info-row"><span>Phone</span><span>{{ member[2] or '—' }}</span></div>
-            <div class="info-row"><span>Email</span><span>{{ member[3] or '—' }}</span></div>
-            <div class="info-row"><span>Joined</span><span>{{ member[4] }}</span></div>
-            <div class="info-row"><span>Status</span><span>{{ member[6] }}</span></div>
+            <div class="info-row"><span>Name</span><span>{{ member.name }}</span></div>
+            <div class="info-row"><span>Phone</span><span>{{ member.phone or '—' }}</span></div>
+            <div class="info-row"><span>Email</span><span>{{ member.email or '—' }}</span></div>
+            <div class="info-row"><span>Joined</span><span>{{ member.join_date }}</span></div>
+            <div class="info-row"><span>Status</span><span>{{ member.status }}</span></div>
         </div>
 
         <div class="card">
@@ -177,7 +177,7 @@
         <h4>➕ Add New Fee</h4>
 
         <form method="POST" action="/add-fees" style="display:flex;gap:15px;flex-wrap:wrap;">
-            <input type="hidden" name="member_id" value="{{ member[0] }}">
+            <input type="hidden" name="member_id" value="{{ member.id }}">
 
             <input
                 type="number"
@@ -203,26 +203,26 @@
         <div class="recent-list">
             {% for fee in fees %}
             <div class="list-item" style="justify-content:space-between;align-items:center;
-                {% if fee[5] == 'pending' %}
+                {% if fee.paid_status == 'pending' %}
                     border-left:4px solid #ffc107;background:rgba(255,193,7,.15);
-                {% elif fee[5] == 'paid' %}
+                {% elif fee.paid_status == 'paid' %}
                     border-left:4px solid #4caf50;
                 {% endif %}
             ">
                 <div>
-                    <span style="display:block;color:#ff6b35;font-weight:bold;">₹{{ fee[2]|int }}</span>
-                    <span style="display:block;color:#a0a0a0;font-size:0.9em;">Due: {{ fee[4] }}</span>
+                    <span style="display:block;color:#ff6b35;font-weight:bold;">₹{{ fee.amount|int }}</span>
+                    <span style="display:block;color:#a0a0a0;font-size:0.9em;">Due: {{ fee.next_due }}</span>
                 </div>
                 <div style="text-align:right;">
                     <span style="display:block;padding:5px 12px;border-radius:6px;
-                        {% if fee[5] == 'pending' %}
+                        {% if fee.paid_status == 'pending' %}
                             background:#ffc107;color:#000;font-weight:bold;
                         {% else %}
                             background:#4caf50;color:#fff;font-weight:bold;
                         {% endif %}
-                    ">{{ fee[5]|upper }}</span>
-                    {% if fee[5] == 'pending' %}
-                    <form action="/pay-fees/{{ member[0] }}" method="POST" style="margin-top:8px;">
+                    ">{{ fee.paid_status|upper }}</span>
+                    {% if fee.paid_status == 'pending' %}
+                    <form action="/pay-fees/{{ member.id }}" method="POST" style="margin-top:8px;">
                         <button type="submit" class="btn-primary" style="padding:6px 12px;font-size:0.85em;">✅ Mark Paid</button>
                     </form>
                     {% endif %}
@@ -247,26 +247,26 @@
         <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:20px;margin-bottom:20px;">
             <div class="info-row" style="border:none;">
                 <span>Goal Type</span>
-                <span style="color:#4caf50;font-weight:bold;">{{ '📈 Weight Gain' if goal[0] == 'weight_gain' else '📉 Weight Loss' }}</span>
+                <span style="color:#4caf50;font-weight:bold;">{{ '📈 Weight Gain' if goal.goal_type == 'weight_gain' else '📉 Weight Loss' }}</span>
             </div>
             <div class="info-row" style="border:none;">
                 <span>Target Weight</span>
-                <span style="color:#4caf50;font-weight:bold;">{{ goal[1] }} kg</span>
+                <span style="color:#4caf50;font-weight:bold;">{{ goal.target_weight }} kg</span>
             </div>
             <div class="info-row" style="border:none;">
                 <span>Deadline</span>
-                <span style="color:#4caf50;font-weight:bold;">{{ goal[2] }}</span>
+                <span style="color:#4caf50;font-weight:bold;">{{ goal.deadline }}</span>
             </div>
             {% if weight_logs %}
-                {% set current_weight = weight_logs[0][1] %}
-                {% set difference = current_weight - goal[1] %}
+                {% set current_weight = weight_logs[0].weight %}
+                {% set difference = current_weight - goal.target_weight %}
                 <div class="info-row" style="border:none;">
                     <span>Progress</span>
-                    <span style="color:{% if goal[0] == 'weight_loss' and difference <= 0 %}#4caf50{% elif goal[0] == 'weight_gain' and difference >= 0 %}#4caf50{% else %}#ff6b35{% endif %};font-weight:bold;">
+                    <span style="color:{% if goal.goal_type == 'weight_loss' and difference <= 0 %}#4caf50{% elif goal.goal_type == 'weight_gain' and difference >= 0 %}#4caf50{% else %}#ff6b35{% endif %};font-weight:bold;">
                         {% if difference == 0 %}🎉 Target Reached!{% elif difference < 0 %}{{ difference|abs }} kg remaining{% else %}{{ difference }} kg away{% endif %}
                     </span>
                 </div>
-                {% set progress_percentage = ((goal[1] - member[5])|abs / (current_weight - member[5])|abs * 100) if (current_weight - member[5]) != 0 else 0 %}
+                {% set progress_percentage = ((goal.target_weight - member.start_weight)|abs / (current_weight - member.start_weight)|abs * 100) if (current_weight - member.start_weight) != 0 else 0 %}
                 <div style="margin-top:15px;">
                     <div style="background:rgba(0,0,0,.3);border-radius:10px;height:20px;overflow:hidden;">
                         <div style="background:linear-gradient(90deg,#4caf50,#66bb6a);height:100%;width:{{ [progress_percentage, 100]|min }}%;transition:width 0.3s ease;"></div>
@@ -277,21 +277,21 @@
         </div>
         
         <!-- Update Goal Form -->
-        <form method="POST" action="/set-goal/{{ member[0] }}" style="display:flex;flex-direction:column;gap:12px;">
+        <form method="POST" action="/set-goal/{{ member.id }}" style="display:flex;flex-direction:column;gap:12px;">
             <h5 style="color:#4caf50;margin-top:15px;">Update Goal</h5>
             <div style="display:flex;gap:12px;flex-wrap:wrap;">
                 <select name="goal_type" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;">
-                    <option value="weight_loss" {% if goal and goal[0] == 'weight_loss' %}selected{% endif %}>📉 Weight Loss</option>
-                    <option value="weight_gain" {% if goal and goal[0] == 'weight_gain' %}selected{% endif %}>📈 Weight Gain</option>
+                    <option value="weight_loss" {% if goal and goal.goal_type == 'weight_loss' %}selected{% endif %}>📉 Weight Loss</option>
+                    <option value="weight_gain" {% if goal and goal.goal_type == 'weight_gain' %}selected{% endif %}>📈 Weight Gain</option>
                 </select>
-                <input type="number" name="target_weight" placeholder="Target Weight (kg)" step="0.5" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;" value="{{ goal[1] if goal else '' }}">
-                <input type="date" name="deadline" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;" value="{{ goal[2] if goal else '' }}">
+                <input type="number" name="target_weight" placeholder="Target Weight (kg)" step="0.5" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;" value="{{ goal.target_weight if goal else '' }}">
+                <input type="date" name="deadline" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;" value="{{ goal.deadline if goal else '' }}">
                 <button type="submit" class="btn-primary" style="background:linear-gradient(135deg,#4caf50,#66bb6a);padding:10px 20px;">💾 Update Goal</button>
             </div>
         </form>
         {% else %}
         <!-- Set New Goal Form -->
-        <form method="POST" action="/set-goal/{{ member[0] }}" style="display:flex;flex-direction:column;gap:12px;">
+        <form method="POST" action="/set-goal/{{ member.id }}" style="display:flex;flex-direction:column;gap:12px;">
             <p style="color:#a0a0a0;margin-bottom:10px;">No goal set yet. Create one now!</p>
             <div style="display:flex;gap:12px;flex-wrap:wrap;">
                 <select name="goal_type" required style="padding:10px;border-radius:6px;border:1px solid rgba(76,175,80,.4);background:rgba(0,0,0,.3);color:#fff;flex:1;min-width:150px;">
@@ -313,7 +313,7 @@
         
         <!-- Add Weight Form -->
         <form method="POST" action="/add-weight" style="display:flex;gap:15px;flex-wrap:wrap;margin-bottom:25px;">
-            <input type="hidden" name="member_id" value="{{ member[0] }}">
+            <input type="hidden" name="member_id" value="{{ member.id }}">
             
             <input
                 type="number"
@@ -333,14 +333,14 @@
         <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:15px;">
             <h5 style="color:#ff6b35;margin-bottom:15px;">📊 Weight History</h5>
             <div class="recent-list">
-                {% set start_weight = member[5] %}
+                {% set start_weight = member.start_weight %}
                 {% for log in weight_logs %}
-                    {% set difference = log[1] - start_weight %}
+                    {% set difference = log.weight - start_weight %}
                     {% set status = '📉 Lost' if difference < 0 else '📈 Gained' if difference > 0 else '✅ Same' %}
                     <div class="list-item" style="justify-content:space-between;align-items:center;border-left:4px solid {% if difference < 0 %}#4caf50{% elif difference > 0 %}#ff6b35{% else %}#ffc107{% endif %};">
                         <div>
-                            <span style="display:block;color:#fff;font-weight:bold;">{{ log[0] }}</span>
-                            <span style="display:block;color:#a0a0a0;font-size:0.9em;">Weight: {{ log[1] }} kg</span>
+                            <span style="display:block;color:#fff;font-weight:bold;">{{ log.month }}</span>
+                            <span style="display:block;color:#a0a0a0;font-size:0.9em;">Weight: {{ log.weight }} kg</span>
                         </div>
                         <div style="text-align:right;">
                             <span style="display:block;font-weight:bold;color:{% if difference < 0 %}#4caf50{% elif difference > 0 %}#ff6b35{% else %}#ffc107{% endif %};">{{ status }} {{ difference|abs }} kg</span>
@@ -359,15 +359,15 @@
             <h5 style="color:#ff6b35;margin-bottom:10px;">📈 Summary</h5>
             <div class="info-row" style="border:none;">
                 <span>Starting Weight</span>
-                <span style="color:#ff6b35;font-weight:bold;">{{ member[5] }} kg</span>
+                <span style="color:#ff6b35;font-weight:bold;">{{ member.start_weight }} kg</span>
             </div>
             <div class="info-row" style="border:none;">
                 <span>Current Weight</span>
-                <span style="color:#ff6b35;font-weight:bold;">{{ weight_logs[0][1] }} kg</span>
+                <span style="color:#ff6b35;font-weight:bold;">{{ weight_logs[0].weight }} kg</span>
             </div>
             <div class="info-row" style="border:none;">
                 <span>Total Progress</span>
-                {% set total_change = weight_logs[0][1] - member[5] %}
+                {% set total_change = weight_logs[0].weight - member.start_weight %}
                 <span style="color:{% if total_change < 0 %}#4caf50{% elif total_change > 0 %}#ff6b35{% else %}#ffc107{% endif %};font-weight:bold;">
                     {% if total_change < 0 %}📉 -{{ total_change|abs }} kg{% elif total_change > 0 %}📈 +{{ total_change }} kg{% else %}✅ No change{% endif %}
                 </span>

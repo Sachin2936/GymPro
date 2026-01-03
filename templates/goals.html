@@ -291,31 +291,31 @@
         <h2>💪 Member Goals Overview</h2>
         <div class="goals-grid">
             {% for member in members_with_goals %}
-                {% if member[3] %}  <!-- Only show if goal_type exists -->
+                {% if member.goal_type %}  <!-- Only show if goal_type exists -->
                 <div class="goal-card">
-                    <div class="member-name">{{ member[1] }}</div>
+                    <div class="member-name">{{ member.name }}</div>
                     
                     <div class="goal-info">
                         <div class="info-item" style="border:none;">
-                            <span class="goal-type-badge {% if member[3] == 'weight_loss' %}badge-loss{% else %}badge-gain{% endif %}">
-                                {% if member[3] == 'weight_loss' %}📉 Weight Loss{% else %}📈 Weight Gain{% endif %}
+                            <span class="goal-type-badge {% if member.goal_type == 'weight_loss' %}badge-loss{% else %}badge-gain{% endif %}">
+                                {% if member.goal_type == 'weight_loss' %}📉 Weight Loss{% else %}📈 Weight Gain{% endif %}
                             </span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Start Weight</span>
-                            <span class="info-value">{{ member[2] }} kg</span>
+                            <span class="info-value">{{ member.start_weight }} kg</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Target Weight</span>
-                            <span class="info-value">{{ member[4] }} kg</span>
+                            <span class="info-value">{{ member.target_weight }} kg</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Deadline</span>
-                            <span class="info-value">{{ member[5] }}</span>
+                            <span class="info-value">{{ member.goal_deadline }}</span>
                         </div>
                     </div>
                     
-                    <a href="/member/{{ member[0] }}" class="view-profile-btn">📊 View Profile</a>
+                    <a href="/member/{{ member.id }}" class="view-profile-btn">📊 View Profile</a>
                 </div>
                 {% endif %}
             {% endfor %}

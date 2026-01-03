@@ -268,28 +268,28 @@
             <div class="results-grid">
                 {% for member in results %}
                 <div class="result-card">
-                    <div class="result-avatar">{{ member[1][0].upper() }}</div>
-                    <div class="result-name">{{ member[1] }}</div>
+                    <div class="result-avatar">{{ member.name[0].upper() }}</div>
+                    <div class="result-name">{{ member.name }}</div>
                     <div class="result-detail">
-                        <strong>📞</strong> {{ member[2] }}
+                        <strong>📞</strong> {{ member.phone }}
                     </div>
                     <div class="result-detail">
-                        <strong>📧</strong> {{ member[3] }}
+                        <strong>📧</strong> {{ member.email }}
                     </div>
                     <div class="result-detail">
-                        <strong>📅</strong> Joined {{ member[4] }}
+                        <strong>📅</strong> Joined {{ member.join_date }}
                     </div>
                     <div class="result-detail">
-                        {% if member[6] == 'active' %}
+                        {% if member.status == 'active' %}
                         <strong style="color:#4caf50;">🟢</strong> Active
                         {% else %}
                         <strong style="color:#888;">🔴</strong> Inactive
                         {% endif %}
                     </div>
                     <div class="result-actions">
-                        <a href="/member/{{ member[0] }}" class="btn-small">📊 Profile</a>
-                        {% if member[6] == 'active' %}
-                        <a href="/attendance/{{ member[0] }}" class="btn-small">✅ Attend</a>
+                        <a href="/member/{{ member.id }}" class="btn-small">📊 Profile</a>
+                        {% if member.status == 'active' %}
+                        <a href="/attendance/{{ member.id }}" class="btn-small">✅ Attend</a>
                         {% endif %}
                     </div>
                 </div>

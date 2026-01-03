@@ -292,9 +292,9 @@
                         </td>
                         <td>
                             <div class="member-info">
-                                <div class="member-avatar">{{ item.member[1][0].upper() }}</div>
+                                <div class="member-avatar">{{ item.member.name[0].upper() }}</div>
                                 <div>
-                                    <div class="member-name">{{ item.member[1] }}</div>
+                                    <div class="member-name">{{ item.member.name }}</div>
                                 </div>
                             </div>
                         </td>
@@ -322,7 +322,7 @@
                             </div>
                         </td>
                         <td>
-                            <a href="/insights/{{ item.member[0] }}" class="action-btn">View Details</a>
+                            <a href="/insights/{{ item.member.id }}" class="action-btn">View Details</a>
                         </td>
                     </tr>
                     {% endfor %}

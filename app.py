@@ -331,7 +331,8 @@ def member_details(member_id):
 
         weight_logs = db.execute("""
             SELECT month, weight FROM weight_logs
-            WHERE member_id=? AND gym_owner_id=? ORDER BY month DESC
+            WHERE member_id=? AND gym_owner_id=?
+            ORDER BY month DESC
         """, (member_id, gym_owner_id)).fetchall()
 
         fees = db.execute("""
@@ -341,14 +342,15 @@ def member_details(member_id):
 
         recent_attendance = db.execute("""
             SELECT date, status FROM attendance
-            WHERE member_id=? AND gym_owner_id=? ORDER BY date DESC LIMIT 10
-        """, (member_id,)).fetchall()
+            WHERE member_id=? AND gym_owner_id=?
+            ORDER BY date DESC LIMIT 10
+        """, (member_id, gym_owner_id)).fetchall()
 
-        # Get member goal
         goal = db.execute("""
             SELECT goal_type, target_weight, deadline, achieved
-            FROM member_goals WHERE member_id=?
-        """, (member_id,)).fetchone()
+            FROM member_goals WHERE member_id=? AND gym_owner_id=?
+        """, (member_id, gym_owner_id)).fetchone()
+
 
     return render_template(
         "member_details.html",
@@ -1016,4 +1018,7 @@ def member_insights(member_id):
 
 # -------- RUN ----------------
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    create_tables()
+    # host="0.0.0.0" allows access from other devices on the network
+    # Change debug=False in production
+    app.run(debug=True, host="0.0.0.0", port=5001)

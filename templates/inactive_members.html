@@ -201,15 +201,15 @@
         <div class="members-grid">
             {% for member in inactive_members %}
             <div class="member-card">
-                <div class="member-avatar">{{ member[1][0].upper() }}</div>
-                <div class="member-name">{{ member[1] }}</div>
+                <div class="member-avatar">{{ member.name[0].upper() }}</div>
+                <div class="member-name">{{ member.name }}</div>
                 <div class="member-info">
-                    <p>Joined: {{ member[4] }}</p>
-                    <p>Phone: {{ member[2] or 'N/A' }}</p>
+                    <p>Joined: {{ member.join_date }}</p>
+                    <p>Phone: {{ member.phone or 'N/A' }}</p>
                     <p style="color: #ff6b35; margin-top: 10px;"><strong>Status: Inactive</strong></p>
                 </div>
                 <div class="member-actions">
-                    <form action="/reactivate-member/{{ member[0] }}" method="POST" style="flex: 1;">
+                    <form action="/reactivate-member/{{ member.id }}" method="POST" style="flex: 1;">
                         <button type="submit" class="btn btn-reactivate" style="width: 100%;">✅ Reactivate</button>
                     </form>
                 </div>
